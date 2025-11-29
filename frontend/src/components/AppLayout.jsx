@@ -81,6 +81,17 @@ const AppLayout = ({ children }) => {
                   </Link>
                 )
               })}
+              {booking.temple && (
+                <Link
+                  to="/temple-map"
+                  className={`flex items-center gap-1 hover:text-brand-saffron ${
+                    location.pathname === '/temple-map' ? 'text-brand-saffron' : ''
+                  }`}
+                >
+                  <span>🗺️</span>
+                  Temple Map
+                </Link>
+              )}
             </nav>
             <div className="relative">
               <button
@@ -132,12 +143,22 @@ const AppLayout = ({ children }) => {
             {t('nav.language', 'Language')} · {languageNames[language]}
           </button>
 
-          <Link
-            to="/access"
-            className="ml-auto rounded-full border border-brand-saffron px-5 py-2 text-sm font-semibold text-brand-saffron hover:bg-brand-saffron hover:text-white"
-          >
-            {t('nav.login', 'Login / Signup')}
-          </Link>
+          {!booking.isAuthenticated ? (
+            <Link
+              to="/access"
+              className="ml-auto rounded-full border border-brand-orange px-5 py-2 text-sm font-semibold text-brand-orange hover:bg-brand-orange hover:text-white"
+            >
+              {t('nav.login', 'Login / Signup')}
+            </Link>
+          ) : (
+            <Link
+              to="/profile"
+              className="ml-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-orange text-white font-bold hover:bg-brand-orange-dark"
+              title="View Profile"
+            >
+              {booking.visitors.name ? booking.visitors.name.charAt(0).toUpperCase() : 'U'}
+            </Link>
+          )}
 
           {bookingsOpen && (
             <div className="absolute right-0 top-[72px] z-20 w-[420px] max-w-full rounded-3xl border border-brand-dusk/10 bg-white p-6 text-sm shadow-2xl">

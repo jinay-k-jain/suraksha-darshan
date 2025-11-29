@@ -5,9 +5,12 @@ import TempleSearch from './pages/TempleSearch'
 import BookingOptions from './pages/BookingOptions'
 import SlotAvailability from './pages/SlotAvailability'
 import ParkingAvailability from './pages/ParkingAvailability'
+import ParkingSlotSelection from './pages/ParkingSlotSelection'
 import VisitorDetails from './pages/VisitorDetails'
 import UserAccess from './pages/UserAccess'
 import Confirmation from './pages/Confirmation'
+import Profile from './pages/Profile'
+import TempleMap from './pages/TempleMap'
 
 function App() {
   return (
@@ -19,9 +22,12 @@ function App() {
             <Route path="/booking" element={<BookingOptions />} />
             <Route path="/slots" element={<SlotAvailability />} />
             <Route path="/parking" element={<ParkingAvailability />} />
+            <Route path="/parking-slots" element={<ParkingSlotSelection />} />
             <Route path="/details" element={<VisitorDetails />} />
             <Route path="/access" element={<UserAccess />} />
             <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/temple-map" element={<TempleMap />} />
           </Routes>
         </AppLayout>
       </BrowserRouter>

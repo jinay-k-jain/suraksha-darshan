@@ -28,21 +28,13 @@ const ParkingAvailability = () => {
 
   const handleConfirm = () => {
     const payload = {
-      parkingZone: selectedZone,
+      parkingZone: selectedZoneData.title,
       visitDate,
       parkingTime: arrivalTime,
       vehicleType: vehicle,
     }
-    if (!booking.isAuthenticated) {
-      updateBooking({
-        ...payload,
-        pendingPath: '/details',
-      })
-      navigate('/access')
-      return
-    }
     updateBooking(payload)
-    navigate('/details')
+    navigate('/parking-slots')
   }
 
   if (!booking.temple) {

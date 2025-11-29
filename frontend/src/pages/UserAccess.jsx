@@ -8,7 +8,7 @@ const UserAccess = () => {
   const { booking, updateBooking } = useBooking()
   const t = useTranslation()
 
-  const [activeTab, setActiveTab] = useState('login')
+  const [showSignup, setShowSignup] = useState(false)
   const [authMethod, setAuthMethod] = useState('phone')
   const [phoneOrEmail, setPhoneOrEmail] = useState('')
   const [otpSent, setOtpSent] = useState(false)
@@ -59,57 +59,42 @@ const UserAccess = () => {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
-      <section className="glass-panel space-y-4">
-        <p className="text-sm uppercase tracking-wide text-brand-dusk/60">
-          {t('auth.heading')}
-        </p>
-        <h2 className="section-heading">{t('auth.title')}</h2>
-        <p className="text-brand-dusk/70">{t('auth.subtitle')}</p>
+      <section className="rounded-3xl border-2 border-gray-200 bg-white p-8 shadow-lg">
+        <div className="inline-flex items-center gap-2 rounded-full border border-brand-orange bg-brand-orange/5 px-3 py-1">
+          <span className="text-sm">🔐</span>
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand-orange">
+            {t('auth.heading')}
+          </p>
+        </div>
+        <h2 className="mt-3 font-display text-2xl font-bold text-black md:text-3xl">{t('auth.title')}</h2>
+        <p className="mt-2 text-gray-600">{t('auth.subtitle')}</p>
       </section>
 
-      <div className="glass-panel">
-        <div className="mb-6 flex gap-4 border-b border-brand-dusk/10">
-          <button
-            onClick={() => setActiveTab('login')}
-            className={`pb-3 text-sm font-semibold transition ${
-              activeTab === 'login'
-                ? 'border-b-2 border-brand-saffron text-brand-saffron'
-                : 'text-brand-dusk/60 hover:text-brand-dusk'
-            }`}
-          >
-            {t('auth.loginTab')}
-          </button>
-          <button
-            onClick={() => setActiveTab('signup')}
-            className={`pb-3 text-sm font-semibold transition ${
-              activeTab === 'signup'
-                ? 'border-b-2 border-brand-saffron text-brand-saffron'
-                : 'text-brand-dusk/60 hover:text-brand-dusk'
-            }`}
-          >
-            {t('auth.signupTab')}
-          </button>
-        </div>
-
-        {activeTab === 'login' ? (
+      <div className="rounded-3xl border-2 border-gray-200 bg-white p-8 shadow-lg">
+        {!showSignup ? (
           <div className="space-y-6">
+            <div className="mb-4">
+              <h3 className="text-xl font-bold text-black">Login to Your Account</h3>
+              <p className="mt-1 text-sm text-gray-600">Enter your credentials to continue</p>
+            </div>
+            
             <div className="flex gap-4">
               <button
                 onClick={() => setAuthMethod('phone')}
-                className={`flex-1 rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition ${
                   authMethod === 'phone'
-                    ? 'border-brand-saffron bg-brand-sand/60 text-brand-dusk'
-                    : 'border-brand-dusk/15 text-brand-dusk/60 hover:border-brand-saffron'
+                    ? 'border-brand-orange bg-brand-orange/5 text-brand-orange'
+                    : 'border-gray-300 text-gray-600 hover:border-brand-orange'
                 }`}
               >
                 {t('auth.method.phone')}
               </button>
               <button
                 onClick={() => setAuthMethod('email')}
-                className={`flex-1 rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition ${
                   authMethod === 'email'
-                    ? 'border-brand-saffron bg-brand-sand/60 text-brand-dusk'
-                    : 'border-brand-dusk/15 text-brand-dusk/60 hover:border-brand-saffron'
+                    ? 'border-brand-orange bg-brand-orange/5 text-brand-orange'
+                    : 'border-gray-300 text-gray-600 hover:border-brand-orange'
                 }`}
               >
                 {t('auth.method.email')}
@@ -118,7 +103,7 @@ const UserAccess = () => {
 
             {!otpSent ? (
               <form onSubmit={handleSendOtp} className="space-y-4">
-                <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
+                <label className="flex flex-col text-sm font-medium text-black">
                   {authMethod === 'phone' ? 'Phone number' : 'Email address'}
                   <input
                     type={authMethod === 'phone' ? 'tel' : 'email'}
@@ -126,22 +111,22 @@ const UserAccess = () => {
                     onChange={(e) => setPhoneOrEmail(e.target.value)}
                     required
                     placeholder={authMethod === 'phone' ? '9876543210' : 'you@example.com'}
-                    className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
+                    className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
                 </label>
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-brand-dusk px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-saffron"
+                  className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
                 >
                   {t('auth.sendOtp')}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="space-y-4">
-                <div className="rounded-2xl bg-brand-sand/60 p-4 text-sm text-brand-dusk/70">
+                <div className="rounded-xl border-2 border-green-200 bg-green-50 p-4 text-sm text-green-800">
                   OTP sent to {phoneOrEmail}
                 </div>
-                <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
+                <label className="flex flex-col text-sm font-medium text-black">
                   {t('auth.otpLabel')}
                   <input
                     type="text"
@@ -150,79 +135,110 @@ const UserAccess = () => {
                     required
                     maxLength="6"
                     placeholder="123456"
-                    className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 text-center text-2xl tracking-widest focus:border-brand-saffron focus:outline-none"
+                    className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-center text-2xl tracking-widest transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
                 </label>
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-brand-dusk px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-saffron"
+                  className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
                 >
                   {t('auth.verify')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setOtpSent(false)}
-                  className="w-full text-sm text-brand-dusk/60 hover:text-brand-saffron"
+                  className="w-full text-sm text-gray-600 hover:text-brand-orange"
                 >
                   Change number
                 </button>
               </form>
             )}
+            
+            <div className="mt-6 border-t border-gray-200 pt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account already?{' '}
+                <button
+                  onClick={() => setShowSignup(true)}
+                  className="font-semibold text-brand-orange hover:underline"
+                >
+                  Sign up first
+                </button>
+              </p>
+            </div>
           </div>
         ) : (
-          <form onSubmit={handleSignup} className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-                {t('auth.signup.first')} *
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
-                />
-              </label>
-              <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-                {t('auth.signup.last')} *
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
-                />
-              </label>
+          <div className="space-y-6">
+            <div className="mb-4">
+              <h3 className="text-xl font-bold text-black">Create New Account</h3>
+              <p className="mt-1 text-sm text-gray-600">Sign up to continue with your booking</p>
             </div>
+            
+            <form onSubmit={handleSignup} className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="flex flex-col text-sm font-medium text-black">
+                  {t('auth.signup.first')} *
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                  />
+                </label>
+                <label className="flex flex-col text-sm font-medium text-black">
+                  {t('auth.signup.last')} *
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                  />
+                </label>
+              </div>
 
-            <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-              {t('auth.signup.contact')} *
-              <input
-                type="tel"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                required
-                pattern="[0-9]{10}"
-                className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
-              />
-            </label>
+              <label className="flex flex-col text-sm font-medium text-black">
+                {t('auth.signup.contact')} *
+                <input
+                  type="tel"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                  required
+                  pattern="[0-9]{10}"
+                  className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                />
+              </label>
 
-            <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-              {t('auth.signup.email')}
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
-              />
-            </label>
+              <label className="flex flex-col text-sm font-medium text-black">
+                {t('auth.signup.email')}
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                />
+              </label>
 
-            <button
-              type="submit"
-              className="w-full rounded-full bg-brand-dusk px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-saffron"
-            >
-              {t('auth.signup.cta')}
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
+              >
+                {t('auth.signup.cta')}
+              </button>
+            </form>
+            
+            <div className="mt-6 border-t border-gray-200 pt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Already have an account?{' '}
+                <button
+                  onClick={() => setShowSignup(false)}
+                  className="font-semibold text-brand-orange hover:underline"
+                >
+                  Login here
+                </button>
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>

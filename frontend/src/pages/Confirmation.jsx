@@ -110,8 +110,15 @@ const Confirmation = () => {
                   Parking
                 </p>
                 <p className="text-sm text-brand-dusk/70">
-                  Zone {booking.parkingZone} at {booking.parkingTime} hrs (
-                  {booking.vehicleType})
+                  Zone: {booking.parkingZone}
+                  {booking.parkingSlot && (
+                    <span className="ml-2 rounded-full bg-brand-orange/20 px-2 py-0.5 font-semibold text-brand-orange">
+                      Slot {booking.parkingSlot}
+                    </span>
+                  )}
+                </p>
+                <p className="mt-1 text-sm text-brand-dusk/70">
+                  {booking.parkingTime} hrs · {booking.vehicleType}
                 </p>
               </article>
             )}
