@@ -15,7 +15,7 @@ const VisitorDetails = () => {
   const [differentlyAbled, setDifferentlyAbled] = useState(
     booking.visitors.differentlyAbled || 0
   )
-  const [notes, setNotes] = useState(booking.visitors.notes || '')
+  //const [notes, setNotes] = useState(booking.visitors.notes || '')
 
   useEffect(() => {
     if (!booking.temple) {
@@ -32,7 +32,7 @@ const VisitorDetails = () => {
         total,
         elders,
         differentlyAbled,
-        notes,
+        //notes,
       },
       currentBooking: {
         id: `BK-${Math.floor(Math.random() * 10000)}`,
@@ -132,7 +132,7 @@ const VisitorDetails = () => {
             </label>
           </div>
 
-          <label className="mt-4 flex flex-col text-sm font-medium text-brand-dusk/70">
+          {/* <label className="mt-4 flex flex-col text-sm font-medium text-brand-dusk/70">
             {t('details.notes')}
             <textarea
               value={notes}
@@ -141,7 +141,7 @@ const VisitorDetails = () => {
               placeholder="Any special requirements or medical conditions..."
               className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
             />
-          </label>
+          </label> */}
         </div>
 
         <div className="rounded-3xl border border-brand-dusk/10 bg-white/80 p-5">
@@ -164,8 +164,9 @@ const VisitorDetails = () => {
               </p>
             )}
             <p>
-              <strong>Visitors:</strong> {total} (Elders: {elders}, Differently abled:{' '}
-              {differentlyAbled})
+              <strong>Visitors:</strong> {total} 
+              {/* (Elders: {elders}, Differently abled:{' '}
+              {differentlyAbled}) */}
             </p>
           </div>
         </div>
