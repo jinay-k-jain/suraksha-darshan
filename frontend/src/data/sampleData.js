@@ -14,7 +14,7 @@ export const temples = [
     origin:
       'Legends say Lord Shiva manifested here after the cosmic churning, sanctifying the confluence of the Ganga with divine energy.',
     image:
-      'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=900&q=60',
+      'https://kashi.gov.in/cmsadmin/getApiFile/CMS/68c3e3daadb281757668314~jpg',
   },
   {
     id: 'tirupati',
@@ -31,7 +31,7 @@ export const temples = [
     origin:
       'Mythology narrates that Lord Venkateswara descended to Tirumala to save humanity during Kali Yuga, with the temple foundation laid by the Pallavas.',
     image:
-      'https://images.unsplash.com/photo-1508675801607-925cd1f7ddf2?auto=format&fit=crop&w=900&q=60',
+      'https://static.toiimg.com/thumb/msid-98194132,width-1070,height-580,imgsize-1694330,resizemode-75,overlay-toi_sw,pt-32,y_pad-40/photo.jpg',
   },
   {
     id: 'madurai',
@@ -48,7 +48,7 @@ export const temples = [
     origin:
       'Built by the Nayak dynasty in the 16th century, the shrine marks the legend of the warrior princess Meenakshi and Lord Shiva’s union.',
     image:
-      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=60',
+      'https://sanatanajourney.com/wp-content/uploads/2025/03/Madurai-Meenakshi-Amman-Temple-Features.jpg',
   },
   {
     id: 'puri',
@@ -65,7 +65,7 @@ export const temples = [
     origin:
       'Texts describe Lord Jagannath emerging from a sacred log found by King Indradyumna, symbolizing universal brotherhood and compassion.',
     image:
-      'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=60',
+      'https://media.istockphoto.com/id/1069137628/photo/top-of-the-jagannath-temple-puri-odisha-india.jpg?s=612x612&w=0&k=20&c=QIj54CAlnD_CKzb1roAVms9f2fdWnqwOb3BMSMvbee4=',
   },
 ]
 

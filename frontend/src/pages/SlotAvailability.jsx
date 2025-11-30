@@ -65,6 +65,7 @@ const SlotAvailability = () => {
             <article
               key={slot.label}
               onClick={() => setSelectedSlot(slot.label)}
+              onDoubleClick={handleContinue}
               className={`flex cursor-pointer flex-col gap-3 rounded-3xl border p-6 transition hover:-translate-y-1 hover:shadow-xl ${
                 isActive
                   ? 'border-brand-saffron bg-white shadow-lg'
@@ -131,12 +132,23 @@ const SlotAvailability = () => {
               {visitDate} · {selectedSlot}
             </p>
           </div>
-          <button
-            onClick={handleContinue}
-            className="inline-flex items-center justify-center rounded-full bg-brand-dusk px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-saffron"
-          >
-            {t('slots.cta')}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleContinue}
+              className="inline-flex items-center justify-center rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-orange-dark"
+            >
+              {t('slots.cta')}
+            </button>
+            <button
+              onClick={() => navigate('/booking')}
+              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-lg hover:border-brand-orange hover:text-brand-orange"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Return to Temple Info
+            </button>
+          </div>
         </div>
       )}
     </div>
