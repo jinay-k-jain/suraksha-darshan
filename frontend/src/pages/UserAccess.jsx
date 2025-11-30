@@ -9,32 +9,41 @@ const UserAccess = () => {
   const t = useTranslation()
 
   const [showSignup, setShowSignup] = useState(false)
-  const [authMethod, setAuthMethod] = useState('phone')
-  const [phoneOrEmail, setPhoneOrEmail] = useState('')
-  const [otpSent, setOtpSent] = useState(false)
-  const [otp, setOtp] = useState('')
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  
+  // Login fields
+  const [loginContact, setLoginContact] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [showLoginPassword, setShowLoginPassword] = useState(false)
 
   // Signup fields
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [contact, setContact] = useState('')
-  const [email, setEmail] = useState('')
+  const [contactNo, setContactNo] = useState('')
+  const [signupPassword, setSignupPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showSignupPassword, setShowSignupPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  const handleSendOtp = (e) => {
-    e.preventDefault()
-    // Simulate OTP send
-    setOtpSent(true)
-  }
+  // Forgot password fields
+  const [resetContact, setResetContact] = useState('')
+  const [otpSent, setOtpSent] = useState(false)
+  const [generatedOtp, setGeneratedOtp] = useState('')
+  const [resetOtp, setResetOtp] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
 
-  const handleVerifyOtp = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault()
-    // Simulate OTP verification
+    // Simulate login
     updateBooking({
       isAuthenticated: true,
-      otpVerified: true,
       visitors: {
         ...booking.visitors,
-        phone: phoneOrEmail,
+        name: loginContact,
+        contact: loginContact,
       },
     })
     const nextPath = booking.pendingPath || '/details'
@@ -43,18 +52,51 @@ const UserAccess = () => {
 
   const handleSignup = (e) => {
     e.preventDefault()
+    if (signupPassword !== confirmPassword) {
+      alert('Passwords do not match!')
+      return
+    }
     // Simulate signup
     updateBooking({
       isAuthenticated: true,
-      otpVerified: true,
       visitors: {
         ...booking.visitors,
         name: `${firstName} ${lastName}`,
-        phone: contact,
+        contact: contactNo,
       },
     })
     const nextPath = booking.pendingPath || '/details'
     navigate(nextPath)
+  }
+
+  const handleSendResetOtp = (e) => {
+    e.preventDefault()
+    // Generate random 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    setGeneratedOtp(otp)
+    alert(`Your OTP is: ${otp}`)
+    setOtpSent(true)
+  }
+
+  const handleResetPassword = (e) => {
+    e.preventDefault()
+    if (resetOtp !== generatedOtp) {
+      alert('Invalid OTP! Please enter the correct OTP.')
+      return
+    }
+    if (newPassword !== confirmNewPassword) {
+      alert('Passwords do not match!')
+      return
+    }
+    // Simulate password reset
+    alert('Password reset successful!')
+    setShowForgotPassword(false)
+    setOtpSent(false)
+    setResetContact('')
+    setGeneratedOtp('')
+    setResetOtp('')
+    setNewPassword('')
+    setConfirmNewPassword('')
   }
 
   return (
@@ -66,51 +108,34 @@ const UserAccess = () => {
             {t('auth.heading')}
           </p>
         </div>
-        <h2 className="mt-3 font-display text-2xl font-bold text-black md:text-3xl">{t('auth.title')}</h2>
-        <p className="mt-2 text-gray-600">{t('auth.subtitle')}</p>
+        <h2 className="mt-3 font-display text-2xl font-bold text-black md:text-3xl">
+          {showForgotPassword ? 'Reset Password' : showSignup ? 'Create Account' : t('auth.title')}
+        </h2>
+        <p className="mt-2 text-gray-600">
+          {showForgotPassword 
+            ? 'Enter your contact number to get OTP for password reset' 
+            : showSignup 
+              ? 'Sign up to continue with your booking' 
+              : t('auth.subtitle')}
+        </p>
       </section>
 
       <div className="rounded-3xl border-2 border-gray-200 bg-white p-8 shadow-lg">
-        {!showSignup ? (
+        {showForgotPassword ? (
+          // Forgot Password Flow
           <div className="space-y-6">
-            <div className="mb-4">
-              <h3 className="text-xl font-bold text-black">Login to Your Account</h3>
-              <p className="mt-1 text-sm text-gray-600">Enter your credentials to continue</p>
-            </div>
-            
-            <div className="flex gap-4">
-              <button
-                onClick={() => setAuthMethod('phone')}
-                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition ${
-                  authMethod === 'phone'
-                    ? 'border-brand-orange bg-brand-orange/5 text-brand-orange'
-                    : 'border-gray-300 text-gray-600 hover:border-brand-orange'
-                }`}
-              >
-                {t('auth.method.phone')}
-              </button>
-              <button
-                onClick={() => setAuthMethod('email')}
-                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition ${
-                  authMethod === 'email'
-                    ? 'border-brand-orange bg-brand-orange/5 text-brand-orange'
-                    : 'border-gray-300 text-gray-600 hover:border-brand-orange'
-                }`}
-              >
-                {t('auth.method.email')}
-              </button>
-            </div>
-
             {!otpSent ? (
-              <form onSubmit={handleSendOtp} className="space-y-4">
+              <form onSubmit={handleSendResetOtp} className="space-y-4">
                 <label className="flex flex-col text-sm font-medium text-black">
-                  {authMethod === 'phone' ? 'Phone number' : 'Email address'}
+                  Contact Number *
                   <input
-                    type={authMethod === 'phone' ? 'tel' : 'email'}
-                    value={phoneOrEmail}
-                    onChange={(e) => setPhoneOrEmail(e.target.value)}
+                    type="tel"
+                    value={resetContact}
+                    onChange={(e) => setResetContact(e.target.value)}
                     required
-                    placeholder={authMethod === 'phone' ? '9876543210' : 'you@example.com'}
+                    placeholder="Enter your contact number"
+                    pattern="[0-9]{10}"
+                    maxLength="10"
                     className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
                 </label>
@@ -118,43 +143,166 @@ const UserAccess = () => {
                   type="submit"
                   className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
                 >
-                  {t('auth.sendOtp')}
+                  Send OTP
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleVerifyOtp} className="space-y-4">
+              <form onSubmit={handleResetPassword} className="space-y-4">
                 <div className="rounded-xl border-2 border-green-200 bg-green-50 p-4 text-sm text-green-800">
-                  OTP sent to {phoneOrEmail}
+                  Your OTP: <span className="font-bold text-lg">{generatedOtp}</span>
                 </div>
                 <label className="flex flex-col text-sm font-medium text-black">
-                  {t('auth.otpLabel')}
+                  Enter OTP *
                   <input
                     type="text"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
+                    value={resetOtp}
+                    onChange={(e) => setResetOtp(e.target.value)}
                     required
                     maxLength="6"
                     placeholder="123456"
-                    className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-center text-2xl tracking-widest transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                    className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-center text-xl tracking-widest transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
+                </label>
+                <label className="flex flex-col text-sm font-medium text-black">
+                  New Password *
+                  <div className="relative">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      minLength="6"
+                      className="mt-2 w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-orange"
+                    >
+                      {showNewPassword ? '👁️' : '👁️‍🗨️'}
+                    </button>
+                  </div>
+                </label>
+                <label className="flex flex-col text-sm font-medium text-black">
+                  Confirm New Password *
+                  <div className="relative">
+                    <input
+                      type={showConfirmNewPassword ? "text" : "password"}
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      required
+                      minLength="6"
+                      className={`mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none ${
+                        confirmNewPassword && newPassword !== confirmNewPassword
+                          ? 'border-red-500'
+                          : confirmNewPassword && newPassword === confirmNewPassword
+                          ? 'border-green-500'
+                          : 'border-gray-300'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-orange"
+                    >
+                      {showConfirmNewPassword ? '👁️' : '👁️‍🗨️'}
+                    </button>
+                  </div>
+                  {confirmNewPassword && newPassword !== confirmNewPassword && (
+                    <span className="mt-1 text-xs text-red-500">Passwords do not match</span>
+                  )}
+                  {confirmNewPassword && newPassword === confirmNewPassword && (
+                    <span className="mt-1 text-xs text-green-500">Passwords match ✓</span>
+                  )}
                 </label>
                 <button
                   type="submit"
                   className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
                 >
-                  {t('auth.verify')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setOtpSent(false)}
-                  className="w-full text-sm text-gray-600 hover:text-brand-orange"
-                >
-                  Change number
+                  Reset Password
                 </button>
               </form>
             )}
             
-            <div className="mt-6 border-t border-gray-200 pt-6 text-center">
+            <div className="border-t border-gray-200 pt-4 text-center">
+              <button
+                onClick={() => {
+                  setShowForgotPassword(false)
+                  setOtpSent(false)
+                  setResetContact('')
+                  setGeneratedOtp('')
+                  setResetOtp('')
+                  setNewPassword('')
+                  setConfirmNewPassword('')
+                }}
+                className="text-sm font-semibold text-brand-orange hover:underline"
+              >
+                Back to Login
+              </button>
+            </div>
+          </div>
+        ) : !showSignup ? (
+          // Login Form
+          <div className="space-y-6">
+            <div className="mb-4">
+              <h3 className="text-xl font-bold text-black">Login to Your Account</h3>
+              <p className="mt-1 text-sm text-gray-600">Enter your credentials to continue</p>
+            </div>
+            
+            <form onSubmit={handleLogin} className="space-y-4">
+              <label className="flex flex-col text-sm font-medium text-black">
+                Contact Number *
+                <input
+                  type="tel"
+                  value={loginContact}
+                  onChange={(e) => setLoginContact(e.target.value)}
+                  required
+                  placeholder="Enter your contact number"
+                  pattern="[0-9]{10}"
+                  maxLength="10"
+                  className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                />
+              </label>
+              
+              <label className="flex flex-col text-sm font-medium text-black">
+                Password *
+                <div className="relative">
+                  <input
+                    type={showLoginPassword ? "text" : "password"}
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    required
+                    minLength="6"
+                    className="mt-2 w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-orange"
+                  >
+                    {showLoginPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+              </label>
+              
+              <button
+                type="submit"
+                className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
+              >
+                Login
+              </button>
+            </form>
+            
+            <div className="text-center">
+              <button
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm font-semibold text-brand-orange hover:underline"
+              >
+                Forgot Password?
+              </button>
+            </div>
+            
+            <div className="border-t border-gray-200 pt-6 text-center">
               <p className="text-sm text-gray-600">
                 Don't have an account already?{' '}
                 <button
@@ -167,6 +315,7 @@ const UserAccess = () => {
             </div>
           </div>
         ) : (
+          // Signup Form
           <div className="space-y-6">
             <div className="mb-4">
               <h3 className="text-xl font-bold text-black">Create New Account</h3>
@@ -176,58 +325,108 @@ const UserAccess = () => {
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="flex flex-col text-sm font-medium text-black">
-                  {t('auth.signup.first')} *
+                  First Name *
                   <input
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
+                    placeholder="John"
                     className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
                 </label>
                 <label className="flex flex-col text-sm font-medium text-black">
-                  {t('auth.signup.last')} *
+                  Last Name *
                   <input
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
+                    placeholder="Doe"
                     className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
                 </label>
               </div>
 
               <label className="flex flex-col text-sm font-medium text-black">
-                {t('auth.signup.contact')} *
+                Contact Number *
                 <input
                   type="tel"
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
+                  value={contactNo}
+                  onChange={(e) => setContactNo(e.target.value)}
                   required
+                  placeholder="Enter your contact number"
                   pattern="[0-9]{10}"
+                  maxLength="10"
                   className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                 />
               </label>
 
               <label className="flex flex-col text-sm font-medium text-black">
-                {t('auth.signup.email')}
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
-                />
+                Password *
+                <div className="relative">
+                  <input
+                    type={showSignupPassword ? "text" : "password"}
+                    value={signupPassword}
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                    required
+                    minLength="6"
+                    placeholder="Minimum 6 characters"
+                    className="mt-2 w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignupPassword(!showSignupPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-orange"
+                  >
+                    {showSignupPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+              </label>
+
+              <label className="flex flex-col text-sm font-medium text-black">
+                Confirm Password *
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    minLength="6"
+                    placeholder="Re-enter password"
+                    className={`mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none ${
+                      confirmPassword && signupPassword !== confirmPassword
+                        ? 'border-red-500'
+                        : confirmPassword && signupPassword === confirmPassword
+                        ? 'border-green-500'
+                        : 'border-gray-300'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-orange"
+                  >
+                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+                {confirmPassword && signupPassword !== confirmPassword && (
+                  <span className="mt-1 text-xs text-red-500">Passwords do not match</span>
+                )}
+                {confirmPassword && signupPassword === confirmPassword && (
+                  <span className="mt-1 text-xs text-green-500">Passwords match ✓</span>
+                )}
               </label>
 
               <button
                 type="submit"
                 className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
               >
-                {t('auth.signup.cta')}
+                Create Account
               </button>
             </form>
             
-            <div className="mt-6 border-t border-gray-200 pt-6 text-center">
+            <div className="border-t border-gray-200 pt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{' '}
                 <button
