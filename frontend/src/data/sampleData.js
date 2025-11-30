@@ -87,6 +87,18 @@ export const slotTemplates = [
   { label: '08:00 - 09:00 AM', status: 'filling' },
   { label: '09:00 - 10:00 AM', status: 'waitlist' },
   { label: '10:00 - 11:00 AM', status: 'available' },
+  { label: '11:00 - 12:00 AM', status: 'few' },
+  { label: '12:00 - 01:00 PM', status: 'available' },
+  { label: '01:00 - 02:00 PM', status: 'available' },
+  { label: '02:00 - 03:00 PM', status: 'filling' },
+  { label: '03:00 - 04:00 PM', status: 'waitlist' },
+  { label: '04:00 - 05:00 PM', status: 'available' },
+  { label: '05:00 - 06:00 PM', status: 'available' },
+  { label: '06:00 - 07:00 PM', status: 'filling' },
+  { label: '07:00 - 08:00 PM', status: 'waitlist' },
+  { label: '08:00 - 09:00 PM', status: 'available' },
+  { label: '09:00 - 10:00 PM', status: 'waitlist' },
+  { label: '10:00 - 11:00 PM', status: 'available' },
 ]
 
 export const parkingZones = [

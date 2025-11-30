@@ -47,7 +47,7 @@ const Confirmation = () => {
     <div className="space-y-8">
       <section className="glass-panel space-y-4">
         <p className="text-sm uppercase tracking-wide text-brand-dusk/60">
-          Step 05 · Pass generated
+          Pass generated
         </p>
         <h2 className="section-heading">Your SurakshaDarshan QR is ready</h2>
         <p className="text-brand-dusk/70">
@@ -111,14 +111,12 @@ const Confirmation = () => {
                 </p>
                 <p className="text-sm text-brand-dusk/70">
                   Zone: {booking.parkingZone}
-                  {booking.parkingSlot && (
-                    <span className="ml-2 rounded-full bg-brand-orange/20 px-2 py-0.5 font-semibold text-brand-orange">
-                      Slot {booking.parkingSlot}
-                    </span>
-                  )}
                 </p>
                 <p className="mt-1 text-sm text-brand-dusk/70">
                   {booking.parkingTime} hrs · {booking.vehicleType}
+                </p>
+                <p className="mt-2 text-xs text-brand-dusk/50">
+                  * Slot will be assigned upon arrival
                 </p>
               </article>
             )}

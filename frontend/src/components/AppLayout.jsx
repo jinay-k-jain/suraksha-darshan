@@ -14,6 +14,9 @@ const AppLayout = ({ children }) => {
   const { booking, updateBooking, language, setLanguage } = useBooking()
   const [bookingsOpen, setBookingsOpen] = useState(false)
   const [languageOpen, setLanguageOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [showCancelOtp, setShowCancelOtp] = useState(false)
+  const [cancelOtp, setCancelOtp] = useState('')
   const [selectedHistory, setSelectedHistory] = useState(
     booking.pastBookings[0] ?? null,
   )
@@ -22,6 +25,7 @@ const AppLayout = ({ children }) => {
   useEffect(() => {
     setBookingsOpen(false)
     setLanguageOpen(false)
+    setProfileOpen(false)
   }, [location.pathname])
 
   useEffect(() => {
@@ -32,18 +36,46 @@ const AppLayout = ({ children }) => {
     setSelectedHistory(booking.pastBookings[0] ?? null)
   }, [booking.pastBookings])
 
-  const handleCancelCurrent = () => {
-    if (!booking.currentBooking) return
-    const cancelledRecord = {
-      ...booking.currentBooking,
-      status: 'Cancelled',
-      cancelledOn: new Date().toISOString(),
-    }
-    updateBooking({
-      currentBooking: null,
-      pastBookings: [cancelledRecord, ...booking.pastBookings],
-    })
+  const handleCancelRequest = () => {
+    setShowCancelOtp(true)
   }
+
+  const handleCancelConfirm = () => {
+    if (!booking.currentBooking || !cancelOtp) return
+    // In real app, verify OTP here
+    if (cancelOtp.length === 6) {
+      const cancelledRecord = {
+        ...booking.currentBooking,
+        status: 'Cancelled',
+        cancelledOn: new Date().toISOString(),
+      }
+      updateBooking({
+        currentBooking: null,
+        pastBookings: [cancelledRecord, ...booking.pastBookings],
+      })
+      setShowCancelOtp(false)
+      setCancelOtp('')
+    }
+  }
+
+  const handleLogout = () => {
+    updateBooking({
+      isAuthenticated: false,
+      otpVerified: false,
+      visitors: {
+        name: '',
+        phone: '',
+        email: '',
+        total: 1,
+        elders: 0,
+        differentlyAbled: 0,
+        notes: '',
+      },
+    })
+    setProfileOpen(false)
+  }
+
+  const templesVisited = booking.pastBookings.filter(b => b.status === 'Completed').length
 
   const activeHistory = selectedHistory ?? booking.pastBookings[0]
 
@@ -122,20 +154,24 @@ const AppLayout = ({ children }) => {
                 </div>
               )}
             </div>
+            {booking.isAuthenticated && (
+              <button
+                onClick={() => setBookingsOpen((prev) => !prev)}
+                className="rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron"
+              >
+                {t('nav.myBookings', 'My bookings')}
+              </button>
+            )}
+          </div>
+
+          {booking.isAuthenticated && (
             <button
               onClick={() => setBookingsOpen((prev) => !prev)}
-              className="rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron"
+              className="rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron md:hidden"
             >
               {t('nav.myBookings', 'My bookings')}
             </button>
-          </div>
-
-          <button
-            onClick={() => setBookingsOpen((prev) => !prev)}
-            className="rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron md:hidden"
-          >
-            {t('nav.myBookings', 'My bookings')}
-          </button>
+          )}
           <button
             onClick={() => setLanguageOpen((prev) => !prev)}
             className="rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron md:hidden"
@@ -151,13 +187,51 @@ const AppLayout = ({ children }) => {
               {t('nav.login', 'Login / Signup')}
             </Link>
           ) : (
-            <Link
-              to="/profile"
-              className="ml-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-orange text-white font-bold hover:bg-brand-orange-dark"
-              title="View Profile"
-            >
-              {booking.visitors.name ? booking.visitors.name.charAt(0).toUpperCase() : 'U'}
-            </Link>
+            <div className="relative ml-auto">
+              <button
+                onClick={() => setProfileOpen((prev) => !prev)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-orange text-white font-bold hover:bg-brand-orange-dark"
+                title="View Profile"
+              >
+                {booking.visitors.name ? booking.visitors.name.charAt(0).toUpperCase() : 'U'}
+              </button>
+              
+              {profileOpen && (
+                <div className="absolute right-0 z-30 mt-2 w-80 rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-2xl">
+                  <div className="mb-4 flex items-center gap-4">
+                    <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-brand-orange text-2xl font-bold text-white">
+                      {booking.visitors.name ? booking.visitors.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-black">{booking.visitors.name || 'User'}</h3>
+                      <p className="text-sm text-gray-600">{booking.visitors.phone || 'No phone'}</p>
+                    </div>
+                  </div>
+                  
+                  {booking.visitors.email && (
+                    <div className="mb-4 rounded-xl bg-gray-50 p-3">
+                      <p className="text-xs font-semibold text-gray-500">Email</p>
+                      <p className="text-sm text-gray-700">{booking.visitors.email}</p>
+                    </div>
+                  )}
+                  
+                  <div className="mb-4 rounded-xl border-2 border-brand-orange/20 bg-brand-orange/5 p-4 text-center">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-brand-orange">
+                      Temples Visited
+                    </p>
+                    <p className="mt-2 text-3xl font-bold text-brand-orange">{templesVisited}</p>
+                    <p className="mt-1 text-xs text-gray-600">Through SurakshaDarshan</p>
+                  </div>
+                  
+                  <button
+                    onClick={handleLogout}
+                    className="w-full rounded-full border-2 border-red-500 px-4 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-500 hover:text-white"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
           {bookingsOpen && (
@@ -190,12 +264,43 @@ const AppLayout = ({ children }) => {
                     {booking.currentBooking.visitors.elders} · Differently abled{' '}
                     {booking.currentBooking.visitors.differentlyAbled}
                   </p>
-                  <button
-                    onClick={handleCancelCurrent}
-                    className="mt-2 inline-flex items-center justify-center rounded-full border border-brand-dusk/30 px-3 py-2 text-xs font-semibold text-brand-dusk hover:border-rose-400 hover:text-rose-500"
-                  >
-                    {t('nav.cancelBooking', 'Cancel booking')}
-                  </button>
+                  {!showCancelOtp ? (
+                    <button
+                      onClick={handleCancelRequest}
+                      className="mt-2 inline-flex items-center justify-center rounded-full border border-brand-dusk/30 px-3 py-2 text-xs font-semibold text-brand-dusk hover:border-rose-400 hover:text-rose-500"
+                    >
+                      {t('nav.cancelBooking', 'Cancel booking')}
+                    </button>
+                  ) : (
+                    <div className="mt-3 space-y-2">
+                      <p className="text-xs font-semibold text-brand-dusk">Enter OTP to confirm cancellation:</p>
+                      <input
+                        type="text"
+                        value={cancelOtp}
+                        onChange={(e) => setCancelOtp(e.target.value)}
+                        maxLength="6"
+                        placeholder="123456"
+                        className="w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-center text-lg tracking-widest focus:border-brand-orange focus:outline-none"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleCancelConfirm}
+                          className="flex-1 rounded-full bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600"
+                        >
+                          Confirm Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowCancelOtp(false)
+                            setCancelOtp('')
+                          }}
+                          className="flex-1 rounded-full border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+                        >
+                          Back
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p className="mt-3 rounded-2xl border border-dashed border-brand-dusk/15 p-4 text-brand-slate/60">

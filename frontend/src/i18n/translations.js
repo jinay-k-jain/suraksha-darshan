@@ -46,7 +46,7 @@ export const translations = {
     'common.allStates': 'All states',
     'common.allDistricts': 'All districts',
     'common.continue': 'Continue',
-    'parking.heading': 'Step 03A · Parking intelligence',
+    'parking.heading': 'Parking intelligence',
     'parking.title': 'Reserve a calm arrival',
     'parking.subtitle':
       'Magnetic sensors eliminate false positives that cameras alone miss. Shuttle timings auto-adjust after every weather or traffic alert.',
@@ -55,7 +55,7 @@ export const translations = {
     'parking.vehicle': 'Vehicle',
     'parking.summary': 'Summary',
     'parking.cta': 'Reserve parking & continue →',
-    'slots.heading': 'Step 03B · Slot orchestration',
+    'slots.heading': 'Slot orchestration',
     'slots.title': 'Queue forecast for devotees',
     'slots.subtitle':
       'Hybrid LSTM + live sensors cushion sudden surges caused by weather, trains, or special poojas.',
@@ -64,7 +64,7 @@ export const translations = {
     'slots.inclusive': 'Inclusive planning',
     'slots.inclusiveCopy':
       'We automatically hold 15% capacity for elders, differently abled devotees, and medical emergencies.',
-    'details.heading': 'Step 04 · Visitor verification',
+    'details.heading': 'Visitor verification',
     'details.title': 'One profile for ticket + parking',
     'details.subtitle':
       'Returning devotees can verify via OTP. First timers can share group composition for priority cushions.',
@@ -146,7 +146,7 @@ export const translations = {
     'common.allStates': 'सभी राज्य',
     'common.allDistricts': 'सभी जिले',
     'common.continue': 'जारी रखें',
-    'parking.heading': 'चरण 03A · पार्किंग इंटेलिजेंस',
+    'parking.heading': 'पार्किंग इंटेलिजेंस',
     'parking.title': 'शांत आगमन सुनिश्चित करें',
     'parking.subtitle':
       'मैग्नेटिक सेंसर गलत रीडिंग रोकते हैं और शटल हर अपडेट पर समायोजित होती है।',
@@ -155,7 +155,7 @@ export const translations = {
     'parking.vehicle': 'वाहन',
     'parking.summary': 'सारांश',
     'parking.cta': 'पार्किंग आरक्षित करें और आगे बढ़ें →',
-    'slots.heading': 'चरण 03B · स्लॉट समन्वय',
+    'slots.heading': 'स्लॉट समन्वय',
     'slots.title': 'भक्तों के लिए कतार पूर्वानुमान',
     'slots.subtitle':
       'हाइब्रिड मॉडल मौसम, ट्रेन और विशेष पूजा के समय अचानक भीड़ को संभालते हैं।',
@@ -164,7 +164,7 @@ export const translations = {
     'slots.inclusive': 'समावेशी योजना',
     'slots.inclusiveCopy':
       'हम बुजुर्ग, दिव्यांग और आपातकालीन मामलों के लिए 15% क्षमता सुरक्षित रखते हैं।',
-    'details.heading': 'चरण 04 · भक्त सत्यापन',
+    'details.heading': 'भक्त सत्यापन',
     'details.title': 'एक प्रोफ़ाइल से टिकट + पार्किंग',
     'details.subtitle':
       'पुराने भक्त OTP से सत्यापित कर सकते हैं, नए भक्त समूह विवरण साझा करें।',
@@ -245,7 +245,7 @@ export const translations = {
     'common.allStates': 'அனைத்து மாநிலங்கள்',
     'common.allDistricts': 'அனைத்து மாவட்டங்கள்',
     'common.continue': 'தொடர்க',
-    'parking.heading': 'படி 03A · நிறுத்துமிடம் நுண்ணறிவு',
+    'parking.heading': 'நிறுத்துமிடம் நுண்ணறிவு',
     'parking.title': 'அமைதியான வருகை',
     'parking.subtitle':
       'காந்த சென்சார்கள் தவறான எண்ணிக்கைகளைத் தடுக்கும்; வானிலை அறிவிப்புகளுக்கு ஏற்றார் போல ஷட்டில் இயங்கும்.',
@@ -254,7 +254,7 @@ export const translations = {
     'parking.vehicle': 'வாகனம்',
     'parking.summary': 'சுருக்கம்',
     'parking.cta': 'நிறுத்துமிடம் முன்பதிவு செய்து தொடரவும் →',
-    'slots.heading': 'படி 03B · ஸ்லாட் ஒருங்கிணைப்பு',
+    'slots.heading': 'ஸ்லாட் ஒருங்கிணைப்பு',
     'slots.title': 'பக்தர்களுக்கான வரிசை கணிப்பு',
     'slots.subtitle':
       'காலநிலை, ரயில் மற்றும் சிறப்பு பூஜைகளால் வரும் மாற்றங்களை ஹைபிரிட் மாடல் சமநிலை செய்கிறது.',
@@ -263,7 +263,7 @@ export const translations = {
     'slots.inclusive': 'ஒன்றிணைந்த திட்டம்',
     'slots.inclusiveCopy':
       'மூத்தோர் மற்றும் மாற்றுத்திறனாளிகளுக்காக 15% கொள்ளளவை பாதுகாத்துள்ளோம்.',
-    'details.heading': 'படி 04 · பக்தர் சரிபார்ப்பு',
+    'details.heading': 'பக்தர் சரிபார்ப்பு',
     'details.title': 'ஒரே விண்ணப்பத்தில் டிக்கெட் + நிறுத்துமிடம்',
     'details.subtitle':
       'முந்தைய பக்தர்கள் OTP மூலம் உள்நுழையலாம்; புதியவர்கள் குழு விவரங்களை பகிரலாம்.',
@@ -344,7 +344,7 @@ export const translations = {
     'common.allStates': 'అన్ని రాష్ట్రాలు',
     'common.allDistricts': 'అన్ని జిల్లాలు',
     'common.continue': 'కొనసాగించు',
-    'parking.heading': 'దశ 03A · పార్కింగ్ ఇంటెలిజెన్స్',
+    'parking.heading': 'పార్కింగ్ ఇంటెలిజెన్స్',
     'parking.title': 'స్థిరమైన రాక',
     'parking.subtitle':
       'మెగ్నెటిక్ సెన్సార్‌లు తప్పు కౌంట్లను అడ్డుకుంటాయి, వాతావరణ హెచ్చరికలతో షటిల్ సర్దుతుంది.',
@@ -353,7 +353,7 @@ export const translations = {
     'parking.vehicle': 'వాహనం',
     'parking.summary': 'సారాంశం',
     'parking.cta': 'పార్కింగ్ రిజర్వ్ చేసి కొనసాగండి →',
-    'slots.heading': 'దశ 03B · స్లాట్ సమన్వయం',
+    'slots.heading': 'స్లాట్ సమన్వయం',
     'slots.title': 'భక్తులకున్న క్యూ అంచనా',
     'slots.subtitle':
       'వాతావరణం, రైళ్లు, ప్రత్యేక పూజల వల్ల వచ్చే మార్పులను హైబ్రిడ్ మోడల్ సంరక్షిస్తుంది.',
@@ -362,7 +362,7 @@ export const translations = {
     'slots.inclusive': 'సమగ్ర ప్రణాళిక',
     'slots.inclusiveCopy':
       'మేము వృద్ధులు, భిన్న సామర్థ్యాలు మరియు అత్యవసరుల కోసం 15% సామర్థ్యాన్ని ఉంచుతాం.',
-    'details.heading': 'దశ 04 · భక్త ధృవీకరణ',
+    'details.heading': 'భక్త ధృవీకరణ',
     'details.title': 'ఒకే ప్రొఫైల్‌లో టికెట్ + పార్కింగ్',
     'details.subtitle':
       'పాత భక్తులు OTP ద్వారా, కొత్త వారు బృంద వివరాలను పంచుకుంటారు.',
