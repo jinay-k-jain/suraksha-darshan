@@ -24,7 +24,6 @@ const generateSlots = (rows, slotsPerRow, occupiedSlots = []) => {
 const ParkingSlotSelection = () => {
   const navigate = useNavigate()
   const { booking, updateBooking } = useBooking()
-  const [selectedSlot, setSelectedSlot] = useState(booking.parkingSlot || null)
 
   // Simulate occupied slots (in real app, this would come from API)
   const occupiedSlots = ['A2', 'A4', 'B1', 'B5', 'C3', 'D2', 'D4', 'E1', 'E5']
@@ -36,29 +35,14 @@ const ParkingSlotSelection = () => {
     }
   }, [booking.parkingZone, navigate])
 
-  const handleSlotSelect = (slot) => {
-    if (!slot.isOccupied) {
-      setSelectedSlot(slot.id)
-    }
-  }
-
-  const handleConfirm = () => {
-    if (!selectedSlot) return
-    
-    const payload = {
-      parkingSlot: selectedSlot,
-    }
-    
+  const handleContinue = () => {
     if (!booking.isAuthenticated) {
       updateBooking({
-        ...payload,
         pendingPath: '/details',
       })
       navigate('/access')
       return
     }
-    
-    updateBooking(payload)
     navigate('/details')
   }
 
@@ -75,14 +59,14 @@ const ParkingSlotSelection = () => {
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand-orange bg-brand-orange/5 px-3 py-1">
           <span className="text-sm">🅿️</span>
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-orange">
-            Step 03B · Select Parking Slot
+            Real-Time Parking Status
           </p>
         </div>
         <h2 className="mt-3 font-display text-2xl font-bold text-black md:text-3xl">
-          Choose Your Parking Spot
+          Real-Time Parking Status
         </h2>
         <p className="mt-2 text-gray-600">
-          Select an available slot in {booking.parkingZone}
+          Live availability in {booking.parkingZone}
         </p>
       </section>
 
@@ -90,7 +74,7 @@ const ParkingSlotSelection = () => {
         <section className="lg:col-span-2">
           <div className="rounded-3xl border-2 border-gray-200 bg-white p-6 shadow-lg md:p-8">
             {/* Legend */}
-            <div className="mb-6 flex flex-wrap items-center gap-4 text-sm">
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-12 rounded-lg border-2 border-green-500 bg-green-100"></div>
                 <span className="text-gray-700">Available</span>
@@ -98,10 +82,6 @@ const ParkingSlotSelection = () => {
               <div className="flex items-center gap-2">
                 <div className="h-8 w-12 rounded-lg border-2 border-red-500 bg-red-100"></div>
                 <span className="text-gray-700">Occupied</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-12 rounded-lg border-2 border-blue-500 bg-blue-100"></div>
-                <span className="text-gray-700">Selected</span>
               </div>
             </div>
 
@@ -122,20 +102,16 @@ const ParkingSlotSelection = () => {
                     {slots
                       .filter((slot) => slot.row === row)
                       .map((slot) => (
-                        <button
+                        <div
                           key={slot.id}
-                          onClick={() => handleSlotSelect(slot)}
-                          disabled={slot.isOccupied}
-                          className={`flex h-16 items-center justify-center rounded-lg border-2 font-semibold transition ${
-                            selectedSlot === slot.id
-                              ? 'border-blue-500 bg-blue-100 text-blue-700 shadow-lg'
-                              : slot.isOccupied
-                                ? 'cursor-not-allowed border-red-500 bg-red-100 text-red-700 opacity-60'
-                                : 'border-green-500 bg-green-100 text-green-700 hover:border-green-600 hover:bg-green-200 hover:shadow-md'
+                          className={`flex h-16 items-center justify-center rounded-lg border-2 font-semibold ${
+                            slot.isOccupied
+                              ? 'border-red-500 bg-red-100 text-red-700'
+                              : 'border-green-500 bg-green-100 text-green-700'
                           }`}
                         >
                           {slot.id}
-                        </button>
+                        </div>
                       ))}
                   </div>
                 </div>
@@ -183,34 +159,29 @@ const ParkingSlotSelection = () => {
             </div>
           </div>
 
-          {selectedSlot && (
-            <div className="rounded-3xl border-2 border-blue-500 bg-white p-6 shadow-lg">
-              <div className="mb-4 flex items-center gap-2">
-                <span className="text-2xl">✓</span>
-                <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                  Selected Slot
-                </p>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-center rounded-xl bg-blue-100 py-6">
-                  <span className="text-4xl font-bold text-blue-600">{selectedSlot}</span>
-                </div>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <p><strong>Zone:</strong> {booking.parkingZone}</p>
-                  <p><strong>Date:</strong> {booking.visitDate}</p>
-                  <p><strong>Time:</strong> {booking.parkingTime}</p>
-                  <p><strong>Vehicle:</strong> {booking.vehicleType}</p>
-                </div>
-              </div>
+          <div className="rounded-3xl border-2 border-gray-200 bg-white p-6 shadow-lg">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="text-2xl">ℹ️</span>
+              <p className="text-xs font-bold uppercase tracking-wider text-brand-orange">
+                Booking Summary
+              </p>
             </div>
-          )}
+            <div className="space-y-2 text-sm text-gray-600">
+              <p><strong>Zone:</strong> {booking.parkingZone}</p>
+              <p><strong>Date:</strong> {booking.visitDate}</p>
+              <p><strong>Time:</strong> {booking.parkingTime}</p>
+              <p><strong>Vehicle:</strong> {booking.vehicleType}</p>
+            </div>
+            <p className="mt-4 text-xs text-gray-500">
+              * Parking slot will be assigned automatically upon arrival
+            </p>
+          </div>
 
           <button
-            onClick={handleConfirm}
-            disabled={!selectedSlot}
-            className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={handleContinue}
+            className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
           >
-            {selectedSlot ? 'Confirm Slot & Continue →' : 'Select a slot to continue'}
+            Continue to Details →
           </button>
         </section>
       </div>

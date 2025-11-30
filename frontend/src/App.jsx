@@ -9,7 +9,6 @@ import ParkingSlotSelection from './pages/ParkingSlotSelection'
 import VisitorDetails from './pages/VisitorDetails'
 import UserAccess from './pages/UserAccess'
 import Confirmation from './pages/Confirmation'
-import Profile from './pages/Profile'
 import TempleMap from './pages/TempleMap'
 
 function App() {
@@ -26,7 +25,6 @@ function App() {
             <Route path="/details" element={<VisitorDetails />} />
             <Route path="/access" element={<UserAccess />} />
             <Route path="/confirmation" element={<Confirmation />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="/temple-map" element={<TempleMap />} />
           </Routes>
         </AppLayout>

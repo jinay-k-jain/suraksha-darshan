@@ -17,9 +17,11 @@ const buildInitialBooking = () => ({
   vehicleType: 'Car',
   parkingZone: '',
   parkingTime: '',
+  parkingSlot: '',
   visitors: {
     name: '',
     phone: '',
+    email: '',
     total: 1,
     elders: 0,
     differentlyAbled: 0,

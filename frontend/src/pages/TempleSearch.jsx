@@ -166,48 +166,66 @@ const TempleSearch = () => {
           </label>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="flex flex-col text-sm font-semibold text-black">
-              <span className="mb-2 flex items-center gap-2">
-                <span>📍</span>
+            <div className="group">
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-black">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-orange/10 text-sm">
+                  📍
+                </div>
                 {t('common.state')}
-              </span>
-              <select
-                value={selectedState}
-                onChange={(e) => {
-                  setSelectedState(e.target.value)
-                  setSelectedDistrict('')
-                }}
-                className="cursor-pointer rounded-xl border-2 border-gray-300 bg-white px-4 py-3 shadow-sm transition hover:border-brand-orange hover:shadow-md focus:border-brand-orange focus:outline-none"
-              >
-                <option value="">{t('common.allStates')}</option>
-                {Object.keys(locationFilters).map((state) => (
-                  <option key={state} value={state}>
-                    {state}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex flex-col text-sm font-semibold text-black">
-              <span className="mb-2 flex items-center gap-2">
-                <span>🗺️</span>
-                {t('common.district')}
-              </span>
-              <select
-                value={selectedDistrict}
-                onChange={(e) => setSelectedDistrict(e.target.value)}
-                disabled={!selectedState}
-                className="cursor-pointer rounded-xl border-2 border-gray-300 bg-white px-4 py-3 shadow-sm transition hover:border-brand-orange hover:shadow-md focus:border-brand-orange focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-gray-300 disabled:hover:shadow-sm"
-              >
-                <option value="">{t('common.allDistricts')}</option>
-                {selectedState &&
-                  Object.keys(locationFilters[selectedState] || {}).map((district) => (
-                    <option key={district} value={district}>
-                      {district}
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedState}
+                  onChange={(e) => {
+                    setSelectedState(e.target.value)
+                    setSelectedDistrict('')
+                  }}
+                  className="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-300 bg-white px-4 py-3.5 pr-10 text-base shadow-sm transition hover:border-brand-orange hover:shadow-md focus:border-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange/20"
+                >
+                  <option value="">{t('common.allStates')}</option>
+                  {Object.keys(locationFilters).map((state) => (
+                    <option key={state} value={state}>
+                      {state}
                     </option>
                   ))}
-              </select>
-            </label>
+                </select>
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition group-hover:text-brand-orange">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="group">
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-black">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-orange/10 text-sm">
+                  🗺️
+                </div>
+                {t('common.district')}
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedDistrict}
+                  onChange={(e) => setSelectedDistrict(e.target.value)}
+                  disabled={!selectedState}
+                  className="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-300 bg-white px-4 py-3.5 pr-10 text-base shadow-sm transition hover:border-brand-orange hover:shadow-md focus:border-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange/20 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-60 disabled:hover:border-gray-300 disabled:hover:shadow-sm"
+                >
+                  <option value="">{t('common.allDistricts')}</option>
+                  {selectedState &&
+                    Object.keys(locationFilters[selectedState] || {}).map((district) => (
+                      <option key={district} value={district}>
+                        {district}
+                      </option>
+                    ))}
+                </select>
+                <div className={`pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 transition ${selectedState ? 'text-gray-400 group-hover:text-brand-orange' : 'text-gray-300'}`}>
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
