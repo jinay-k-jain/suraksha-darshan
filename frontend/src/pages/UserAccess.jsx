@@ -34,7 +34,8 @@ const UserAccess = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
-
+  const [errorMsg, setErrorMsg] = useState("");
+  
   const handleLogin = (e) => {
     e.preventDefault()
     // Simulate login
@@ -82,9 +83,13 @@ const UserAccess = () => {
   } catch (err) {
     // handle network / server errors here — but we DO NOT stop booking update/navigation
     console.error('Signup API error:',err);
-    const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
+    // const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
     // show an alert but still proceed to booking update/navigation as you requested
-    alert('Signup API error: ' + serverMsg);
+    //alert("User already exists!!");
+    setErrorMsg("User already exists!!");
+return;
+
+    
   } 
   
     // Simulate signup
@@ -405,6 +410,7 @@ const UserAccess = () => {
                     placeholder="Minimum 6 characters"
                     className="mt-2 w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
+                  
                   <button
                     type="button"
                     onClick={() => setShowpassword(!showpassword)}
@@ -433,6 +439,7 @@ const UserAccess = () => {
                         : 'border-gray-300'
                     }`}
                   />
+                  
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -448,7 +455,11 @@ const UserAccess = () => {
                   <span className="mt-1 text-xs text-green-500">Passwords match ✓</span>
                 )}
               </label>
-
+               {errorMsg && (
+    <p className="text-sm text-red-500 font-medium">
+      {errorMsg}
+    </p>
+  )}
               <button
                 type="submit"
                 className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
