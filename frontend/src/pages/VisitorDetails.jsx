@@ -10,12 +10,15 @@ const VisitorDetails = () => {
 
   const [name, setName] = useState(booking.visitors.name || '')
   const [phone, setPhone] = useState(booking.visitors.phone || '')
-  const [total, setTotal] = useState(booking.visitors.total || 1)
+  const [adults, setAdults] = useState(booking.visitors.adults || 1)
+  const [children, setChildren] = useState(booking.visitors.children || 0)
   const [elders, setElders] = useState(booking.visitors.elders || 0)
   const [differentlyAbled, setDifferentlyAbled] = useState(
     booking.visitors.differentlyAbled || 0
   )
-  //const [notes, setNotes] = useState(booking.visitors.notes || '')
+  
+  // Calculate total visitors
+  const totalVisitors = adults + children + elders + differentlyAbled
 
   useEffect(() => {
     if (!booking.temple) {
@@ -31,29 +34,41 @@ const VisitorDetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    
+    if (totalVisitors > 20) {
+      alert('Maximum 20 visitors allowed per booking. Please reduce the number of visitors.')
+      return
+    }
+    
+    if (totalVisitors < 1) {
+      alert('At least 1 visitor is required.')
+      return
+    }
+    
     updateBooking({
       visitors: {
         name,
         phone,
-        total,
+        adults,
+        children,
         elders,
         differentlyAbled,
-        //notes,
+        total: totalVisitors,
       },
       currentBooking: {
         id: `BK-${Math.floor(Math.random() * 10000)}`,
         temple: booking.temple.name,
         city: booking.temple.city,
         date: booking.visitDate,
-        slot: booking.visitSlot, 
-        // || booking.parkingTime,
-        // parking: booking.parkingZone || 'Not selected',
+        slot: booking.visitSlot,
         visitors: {
           name,
           phone,
-          total,
+          adults,
+          children,
           elders,
           differentlyAbled,
+          total: totalVisitors,
         },
       },
     })
@@ -96,15 +111,28 @@ const VisitorDetails = () => {
             </label>
           </div>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
             <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-              Total visitors *
+              Adults *
               <input
                 type="number"
-                value={total}
-                onChange={(e) => setTotal(parseInt(e.target.value) || 1)}
+                value={adults}
+                onChange={(e) => setAdults(parseInt(e.target.value) || 0)}
                 min="1"
+                max="20"
                 required
+                className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
+              />
+            </label>
+
+            <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
+              Children
+              <input
+                type="number"
+                value={children}
+                onChange={(e) => setChildren(parseInt(e.target.value) || 0)}
+                min="0"
+                max="20"
                 className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
               />
             </label>
@@ -116,6 +144,7 @@ const VisitorDetails = () => {
                 value={elders}
                 onChange={(e) => setElders(parseInt(e.target.value) || 0)}
                 min="0"
+                max="20"
                 className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
               />
             </label>
