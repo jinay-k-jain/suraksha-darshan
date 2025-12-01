@@ -35,16 +35,7 @@ const ParkingSlotSelection = () => {
     }
   }, [booking.parkingZone, navigate])
 
-  const handleContinue = () => {
-    if (!booking.isAuthenticated) {
-      updateBooking({
-        pendingPath: '/details',
-      })
-      navigate('/access')
-      return
-    }
-    navigate('/details')
-  }
+
 
   if (!booking.parkingZone) {
     return null
@@ -66,7 +57,7 @@ const ParkingSlotSelection = () => {
           Real-Time Parking Status
         </h2>
         <p className="mt-2 text-gray-600">
-          Live availability in {booking.parkingZone}
+          Live availability in {booking.parkingZone} - View Only
         </p>
       </section>
 
@@ -138,7 +129,7 @@ const ParkingSlotSelection = () => {
             <div className="mb-4 flex items-center gap-2">
               <span className="text-2xl">📊</span>
               <p className="text-xs font-bold uppercase tracking-wider text-brand-orange">
-                Availability
+                Live Availability
               </p>
             </div>
             <div className="space-y-3">
@@ -159,29 +150,30 @@ const ParkingSlotSelection = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border-2 border-gray-200 bg-white p-6 shadow-lg">
-            <div className="mb-4 flex items-center gap-2">
+          <div className="rounded-3xl border-2 border-blue-200 bg-blue-50 p-6 shadow-lg">
+            <div className="mb-3 flex items-center gap-2">
               <span className="text-2xl">ℹ️</span>
-              <p className="text-xs font-bold uppercase tracking-wider text-brand-orange">
-                Booking Summary
+              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                Information
               </p>
             </div>
-            <div className="space-y-2 text-sm text-gray-600">
-              <p><strong>Zone:</strong> {booking.parkingZone}</p>
-              <p><strong>Date:</strong> {booking.visitDate}</p>
-              <p><strong>Time:</strong> {booking.parkingTime}</p>
-              <p><strong>Vehicle:</strong> {booking.vehicleType}</p>
-            </div>
-            <p className="mt-4 text-xs text-gray-500">
-              * Parking slot will be assigned automatically upon arrival
+            <p className="text-sm leading-relaxed text-gray-700">
+              This is a real-time view of parking availability in <strong>{booking.parkingZone}</strong>. 
+              Slots are updated live as vehicles enter and exit.
+            </p>
+            <p className="mt-3 text-xs text-gray-600">
+              * For parking reservations, please complete the temple darshan booking process.
             </p>
           </div>
 
           <button
-            onClick={handleContinue}
-            className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
+            onClick={() => navigate('/parking')}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-lg transition hover:border-brand-orange hover:text-brand-orange"
           >
-            Continue to Details →
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Parking Zones
           </button>
         </section>
       </div>

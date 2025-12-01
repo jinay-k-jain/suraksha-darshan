@@ -75,9 +75,8 @@ const ParkingAvailability = () => {
               onChange={(event) => setVehicle(event.target.value)}
               className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
             >
-              <option>Car</option>
-              <option>Mini bus</option>
               <option>Two wheeler</option>
+              <option>Four wheeler</option>
               <option>Wheelchair van</option>
             </select>
           </label>
@@ -92,6 +91,7 @@ const ParkingAvailability = () => {
             <article
               key={zone.id}
               onClick={() => setSelectedZone(zone.id)}
+              onDoubleClick={handleConfirm}
               className={`flex cursor-pointer flex-col gap-4 rounded-3xl border p-6 shadow transition hover:-translate-y-1 hover:shadow-xl ${
                 isActive
                   ? 'border-brand-saffron bg-white ring-2 ring-brand-saffron'
@@ -151,12 +151,23 @@ const ParkingAvailability = () => {
             Shuttle frequency will align with your slot. Expect assistance for
             elders and differently abled visitors at the bay.
           </p>
-          <button
-            onClick={handleConfirm}
-            className="inline-flex items-center justify-center rounded-full bg-brand-dusk px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-saffron"
-          >
-            {t('parking.cta')}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleConfirm}
+              className="inline-flex items-center justify-center rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-orange-dark"
+            >
+              {t('parking.cta')}
+            </button>
+            <button
+              onClick={() => navigate('/booking')}
+              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-lg hover:border-brand-orange hover:text-brand-orange"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Return to Temple Info
+            </button>
+          </div>
         </div>
       )}
     </div>
