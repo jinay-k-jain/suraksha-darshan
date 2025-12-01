@@ -54,8 +54,9 @@ const VisitorDetails = () => {
         temple: booking.temple.name,
         city: booking.temple.city,
         date: booking.visitDate,
-        slot: booking.visitSlot || booking.parkingTime,
-        parking: booking.parkingZone || 'Not selected',
+        slot: booking.visitSlot, 
+        // || booking.parkingTime,
+        // parking: booking.parkingZone || 'Not selected',
         visitors: {
           name,
           phone,
@@ -203,16 +204,24 @@ const VisitorDetails = () => {
                 <strong>Slot:</strong> {booking.visitSlot}
               </p>
             )}
-            {booking.parkingZone && (
+            {/* {booking.parkingZone && (
               <p>
                 <strong>Parking:</strong> {booking.parkingZone} at {booking.parkingTime}
               </p>
+<<<<<<< HEAD
             )}
             <p className={totalVisitors > 20 ? 'text-red-600 font-bold' : ''}>
               <strong>Total Visitors:</strong> {totalVisitors} / 20
             </p>
             <p className="text-xs text-brand-dusk/60">
               (Adults: {adults}, Children: {children}, Elders: {elders}, Differently abled: {differentlyAbled})
+=======
+            )} */}
+            <p>
+              <strong>Visitors:</strong> {total} 
+              {/* (Elders: {elders}, Differently abled:{' '}
+              {differentlyAbled}) */}
+>>>>>>> 92de808d0831f38009f8af93646dcdf6c6ebd6d1
             </p>
           </div>
         </div>

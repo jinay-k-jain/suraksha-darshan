@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../context/BookingContext'
 import useTranslation from '../hooks/useTranslation'
-
+import axios from   "axios"
 const UserAccess = () => {
   const navigate = useNavigate()
   const { booking, updateBooking } = useBooking()
@@ -17,12 +17,12 @@ const UserAccess = () => {
   const [showLoginPassword, setShowLoginPassword] = useState(false)
 
   // Signup fields
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [contactNo, setContactNo] = useState('')
-  const [signupPassword, setSignupPassword] = useState('')
+  const [firstname, setfirstname] = useState('')
+  const [lastname, setlastname] = useState('')
+  const [phoneno, setphoneno] = useState('')
+  const [password, setpassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [showSignupPassword, setShowSignupPassword] = useState(false)
+  const [showpassword, setShowpassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   // Forgot password fields
@@ -34,7 +34,8 @@ const UserAccess = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
-
+  const [errorMsg, setErrorMsg] = useState("");
+  
   const handleLogin = (e) => {
     e.preventDefault()
     // Simulate login
@@ -49,20 +50,55 @@ const UserAccess = () => {
     const nextPath = booking.pendingPath || '/details'
     navigate(nextPath)
   }
-
-  const handleSignup = (e) => {
+  // const data= {
+  //   firstname:
+  // }
+  
+  const handleSignup = async(e) => {
     e.preventDefault()
-    if (signupPassword !== confirmPassword) {
+    if (password !== confirmPassword) {
       alert('Passwords do not match!')
       return
     }
+    const userInfo={
+      firstname: firstname.trim(),
+    lastname: lastname.trim(),
+    phoneno: phoneno.trim(),
+    password
+    };
+     try {
+    const res = await axios.post(
+      'http://localhost:8000/api/v1/users/register', userInfo,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    // optional: give feedback for success
+    if (res && (res.status === 200 || res.status === 201)) {
+      console.log('Signup API success:', res.data);
+      // if you want a success alert, uncomment:
+      // alert('Signup API call succeeded.');
+    } else {
+      console.warn('Signup API responded with unexpected status:', res?.status, res?.data);
+    }
+  } catch (err) {
+    // handle network / server errors here — but we DO NOT stop booking update/navigation
+    console.error('Signup API error:',err);
+    // const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
+    // show an alert but still proceed to booking update/navigation as you requested
+    //alert("User already exists!!");
+    setErrorMsg("User already exists!!");
+return;
+
+    
+  } 
+  
     // Simulate signup
     updateBooking({
       isAuthenticated: true,
       visitors: {
         ...booking.visitors,
-        name: `${firstName} ${lastName}`,
-        contact: contactNo,
+        name: `${firstname} ${lastname}`,
+        contact: phoneno,
       },
     })
     const nextPath = booking.pendingPath || '/details'
@@ -328,8 +364,8 @@ const UserAccess = () => {
                   First Name *
                   <input
                     type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    value={firstname}
+                    onChange={(e) => setfirstname(e.target.value)}
                     required
                     placeholder="John"
                     className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
@@ -339,8 +375,8 @@ const UserAccess = () => {
                   Last Name *
                   <input
                     type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    value={lastname}
+                    onChange={(e) => setlastname(e.target.value)}
                     required
                     placeholder="Doe"
                     className="mt-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
@@ -352,8 +388,8 @@ const UserAccess = () => {
                 Contact Number *
                 <input
                   type="tel"
-                  value={contactNo}
-                  onChange={(e) => setContactNo(e.target.value)}
+                  value={phoneno}
+                  onChange={(e) => setphoneno(e.target.value)}
                   required
                   placeholder="Enter your contact number"
                   pattern="[0-9]{10}"
@@ -366,20 +402,21 @@ const UserAccess = () => {
                 Password *
                 <div className="relative">
                   <input
-                    type={showSignupPassword ? "text" : "password"}
-                    value={signupPassword}
-                    onChange={(e) => setSignupPassword(e.target.value)}
+                    type={showpassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setpassword(e.target.value)}
                     required
                     minLength="6"
                     placeholder="Minimum 6 characters"
                     className="mt-2 w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none"
                   />
+                  
                   <button
                     type="button"
-                    onClick={() => setShowSignupPassword(!showSignupPassword)}
+                    onClick={() => setShowpassword(!showpassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-brand-orange"
                   >
-                    {showSignupPassword ? '👁️' : '👁️‍🗨️'}
+                    {showpassword ? '👁️' : '👁️‍🗨️'}
                   </button>
                 </div>
               </label>
@@ -395,13 +432,14 @@ const UserAccess = () => {
                     minLength="6"
                     placeholder="Re-enter password"
                     className={`mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 pr-12 transition hover:border-brand-orange focus:border-brand-orange focus:outline-none ${
-                      confirmPassword && signupPassword !== confirmPassword
+                      confirmPassword && password !== confirmPassword
                         ? 'border-red-500'
-                        : confirmPassword && signupPassword === confirmPassword
+                        : confirmPassword && password === confirmPassword
                         ? 'border-green-500'
                         : 'border-gray-300'
                     }`}
                   />
+                  
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -410,14 +448,18 @@ const UserAccess = () => {
                     {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                   </button>
                 </div>
-                {confirmPassword && signupPassword !== confirmPassword && (
+                {confirmPassword && password !== confirmPassword && (
                   <span className="mt-1 text-xs text-red-500">Passwords do not match</span>
                 )}
-                {confirmPassword && signupPassword === confirmPassword && (
+                {confirmPassword && password === confirmPassword && (
                   <span className="mt-1 text-xs text-green-500">Passwords match ✓</span>
                 )}
               </label>
-
+               {errorMsg && (
+    <p className="text-sm text-red-500 font-medium">
+      {errorMsg}
+    </p>
+  )}
               <button
                 type="submit"
                 className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
