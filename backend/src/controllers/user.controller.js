@@ -4,6 +4,23 @@ import {User} from "../models/user.models.js"
 // import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+const generateAccessAndRefereshTokens = async(userId) =>{
+    try {
+        const user = await User.findById(userId)
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken
+        await user.save({ validateBeforeSave: false })
+
+        return {accessToken, refreshToken}
+
+
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating referesh and access token")
+    }
+}
+
 const registerUser = AsyncHandler(async (req,res) => {
     //get user details from frontend
     //validation - not empty
@@ -15,11 +32,10 @@ const registerUser = AsyncHandler(async (req,res) => {
     //remove password and refresh token fiels fro response
     //check for user creation
     //return response
-console.log(1)
-   const { lastname,firstname,phoneno,password} = req.body
 
+   const {lastname,firstname,phoneno,password} = req.body
 
-
+   
 //    console.log("password",password)
 //    console.log("fullname",fullname)
 //    console.log("username",username)
@@ -62,7 +78,7 @@ const user = await User.create({
     // avatar: avatar.url,
     // coverImage: coverImage?.url || "",
     phoneno,
-    password
+    password,
     // username: username.toLowerCase()
 })
 
@@ -82,4 +98,66 @@ return res.status(201).json(
 
 })
 
+const loginUser = AsyncHandler(async (req, res) =>{
+    // req body -> data
+    // username or email
+    //find the user
+    //password check
+    //access and referesh token
+    //send cookie
+
+    const {phoneno,password} = req.body
+console.log(phoneno)
+    if (!phoneno) {
+        throw new ApiError(400, "phoneno is required")
+    }
+    
+    // Here is an alternative of above code based on logic discussed in video:
+    // if (!(username || email)) {
+    //     throw new ApiError(400, "username or email is required")
+        
+    // }
+
+    const user = await User.findOne({
+        $or: [{phoneno}]
+    })
+
+    if (!user) {
+        throw new ApiError(404, "User does not exist")
+
+    }
+
+   const isPasswordValid = await user.isPasswordCorrect(password)
+
+   if (!user || !isPasswordValid) {
+    return res.status(400).json({message:"Invalid phone number or password!!"});
+    
+    }
+
+   const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
+
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(
+            200, 
+            {
+                user: loggedInUser, accessToken, refreshToken
+            },
+            "User logged In Successfully"
+        )
+    )
+
+})
+
 export {registerUser}
+export {loginUser}

@@ -36,9 +36,50 @@ const UserAccess = () => {
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
   const [errorMsg, setErrorMsg] = useState("");
   
-  const handleLogin = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault()
+    setErrorMsg(""); 
     // Simulate login
+     const loginData={
+    //   firstname: firstname.trim(),
+    // lastname: lastname.trim(),
+    phoneno: loginContact.trim(),
+    password:loginPassword
+    };
+     try {
+    const res = await axios.post(
+      'http://localhost:8000/api/v1/users/login', loginData,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    //  const nextPath = booking.pendingPath || "/details";
+    // navigate(nextPath);
+    // optional: give feedback for success
+    if (res && (res.status === 200 || res.status === 201)) {
+      console.log('Logged in successfully :', res.data);
+      // if you want a success alert, uncomment:
+      //alert('Logged in successfully!!');
+    
+    } else {
+      console.warn('Login Api responded with unexpected error: ', res?.status, res?.data);
+      alert('Something went wrong!!');
+    }
+  } catch (err) {
+    // handle network / server errors here — but we DO NOT stop booking update/navigation
+   // console.error('Signup API error:',err);
+    // const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
+    // show an alert but still proceed to booking update/navigation as you requested
+    //alert("User already exists!!");
+    //setErrorMsg("User already exists!!");
+     const msg = err?.response?.data?.message || "Invalid login credentials";
+
+    setErrorMsg(msg);
+
+    return; 
+//return;
+
+    
+  } 
+  
     updateBooking({
       isAuthenticated: true,
       visitors: {
@@ -320,7 +361,9 @@ return;
                   </button>
                 </div>
               </label>
-              
+              {errorMsg && (
+  <p className="text-sm text-red-500 font-medium">{errorMsg}</p>
+)}
               <button
                 type="submit"
                 className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
