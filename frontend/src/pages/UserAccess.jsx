@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../context/BookingContext'
 import useTranslation from '../hooks/useTranslation'
+import axios from 'axios'
 
 const UserAccess = () => {
   const navigate = useNavigate()
@@ -35,9 +36,50 @@ const UserAccess = () => {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
   
-  const handleLogin = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault()
+    setErrorMsg(""); 
     // Simulate login
+     const loginData={
+    //   firstname: firstname.trim(),
+    // lastname: lastname.trim(),
+    phoneno: loginContact.trim(),
+    password:loginPassword
+    };
+     try {
+    const res = await axios.post(
+      'http://localhost:8000/api/v1/users/login', loginData,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    //  const nextPath = booking.pendingPath || "/details";
+    // navigate(nextPath);
+    // optional: give feedback for success
+    if (res && (res.status === 200 || res.status === 201)) {
+      console.log('Logged in successfully :', res.data);
+      // if you want a success alert, uncomment:
+      //alert('Logged in successfully!!');
+    
+    } else {
+      console.warn('Login Api responded with unexpected error: ', res?.status, res?.data);
+      alert('Something went wrong!!');
+    }
+  } catch (err) {
+    // handle network / server errors here — but we DO NOT stop booking update/navigation
+   // console.error('Signup API error:',err);
+    // const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
+    // show an alert but still proceed to booking update/navigation as you requested
+    //alert("User already exists!!");
+    //setErrorMsg("User already exists!!");
+     const msg = err?.response?.data?.message || "Invalid login credentials";
+
+    setErrorMsg(msg);
+
+    return; 
+//return;
+
+    
+  } 
+  
     updateBooking({
       isAuthenticated: true,
       visitors: {
@@ -50,8 +92,39 @@ const UserAccess = () => {
     const nextPath = booking.pendingPath || '/'
     navigate(nextPath)
   }
-  const handleSignup = (e) => {
+  const handleSignup = async(e) => {
     e.preventDefault()
+    const userInfo={
+      firstname: firstname.trim(),
+    lastname: lastname.trim(),
+    phoneno: phoneno.trim(),
+    password
+    };
+     try {
+    const res = await axios.post(
+      'http://localhost:8000/api/v1/users/register', userInfo,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    // optional: give feedback for success
+    if (res && (res.status === 200 || res.status === 201)) {
+      console.log('Signup API success:', res.data);
+      // if you want a success alert, uncomment:
+      // alert('Signup API call succeeded.');
+    } else {
+      console.warn('Signup API responded with unexpected status:', res?.status, res?.data);
+    }
+  } catch (err) {
+    // handle network / server errors here — but we DO NOT stop booking update/navigation
+    console.error('Signup API error:',err);
+    // const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
+    // show an alert but still proceed to booking update/navigation as you requested
+    //alert("User already exists!!");
+    setErrorMsg("User already exists!!");
+return;
+
+    
+  }
     if (password !== confirmPassword) {
       alert('Passwords do not match!')
       return
@@ -80,7 +153,7 @@ const UserAccess = () => {
     setOtpSent(true)
   }
 
-  const handleResetPassword = (e) => {
+ const handleResetPassword = async(e) => {
     e.preventDefault()
     if (resetOtp !== generatedOtp) {
       alert('Invalid OTP! Please enter the correct OTP.')
@@ -90,15 +163,55 @@ const UserAccess = () => {
       alert('Passwords do not match!')
       return
     }
-    // Simulate password reset
-    alert('Password reset successful!')
-    setShowForgotPassword(false)
+
+     const userInfo={
+      phoneno: resetContact.trim(),
+      newPassword: newPassword
+    };
+     try {
+    const res = await axios.post(
+      'http://localhost:8000/api/v1/users/reset-password', userInfo,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    // optional: give feedback for success
+    if (res && (res.status === 200 || res.status === 201)) {
+      console.log('password has been reset successfully:', res.data);
+      alert("password reset is successfull")
+      setShowForgotPassword(false)
     setOtpSent(false)
     setResetContact('')
     setGeneratedOtp('')
     setResetOtp('')
     setNewPassword('')
     setConfirmNewPassword('')
+
+      // if you want a success alert, uncomment:
+      // alert('Signup API call succeeded.');
+    } else {
+      console.warn('password changing is responded with unexpected status:', res?.status, res?.data);
+    }
+  } catch (err) {
+    // handle network / server errors here — but we DO NOT stop booking update/navigation
+    console.error('password reset API error:',err);
+    // const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
+    // show an alert but still proceed to booking update/navigation as you requested
+    //alert("User already exists!!");
+    setErrorMsg("error when reseting the password");
+return;
+
+    
+  } 
+
+    // Simulate password reset
+    // alert('Password reset successful!')
+    // setShowForgotPassword(false)
+    // setOtpSent(false)
+    // setResetContact('')
+    // setGeneratedOtp('')
+    // setResetOtp('')
+    // setNewPassword('')
+    // setConfirmNewPassword('')
   }
 
   return (
@@ -286,7 +399,9 @@ const UserAccess = () => {
                   </button>
                 </div>
               </label>
-              
+              {errorMsg && (
+  <p className="text-sm text-red-500 font-medium">{errorMsg}</p>
+)}
               <button
                 type="submit"
                 className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"

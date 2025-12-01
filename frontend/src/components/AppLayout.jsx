@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { useBooking } from '../context/BookingContext'
 import useTranslation from '../hooks/useTranslation'
 import { languages, languageNames } from '../i18n/languages'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const navLinks = [
   { labelKey: 'nav.home', to: '/' },
@@ -10,6 +12,7 @@ const navLinks = [
 ]
 
 const AppLayout = ({ children }) => {
+  const navigate= useNavigate();
   const location = useLocation()
   const { booking, updateBooking, language, setLanguage } = useBooking()
   const [bookingsOpen, setBookingsOpen] = useState(false)
@@ -20,11 +23,15 @@ const AppLayout = ({ children }) => {
   const [selectedHistory, setSelectedHistory] = useState(
     booking.pastBookings[0] ?? null,
   )
+<<<<<<< HEAD
   const [showLogoutSuccess, setShowLogoutSuccess] = useState(false)
   const [showLoginSuccess, setShowLoginSuccess] = useState(false)
   const [previousAuthState, setPreviousAuthState] = useState(booking.isAuthenticated)
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
+=======
+  
+>>>>>>> 45e68ed2aadad402d9acd0c2e67ffb9097a4d8fd
   const t = useTranslation()
 
   useEffect(() => {
@@ -89,6 +96,7 @@ const AppLayout = ({ children }) => {
     }
   }
 
+<<<<<<< HEAD
   const handleLogoutRequest = () => {
     setShowLogoutConfirm(true)
   }
@@ -96,6 +104,18 @@ const AppLayout = ({ children }) => {
   const confirmLogout = () => {
     setShowLogoutConfirm(false)
     updateBooking({
+=======
+  const handleLogout = async() => {
+       try{
+        await axios.post(
+          "http://localhost:8000/api/v1/users/logout",
+          {},
+          {withCredentials: true}
+        );
+
+        alert('User logged out successfully!!')
+        updateBooking({
+>>>>>>> 45e68ed2aadad402d9acd0c2e67ffb9097a4d8fd
       isAuthenticated: false,
       otpVerified: false,
       visitors: {
@@ -109,12 +129,26 @@ const AppLayout = ({ children }) => {
       },
     })
     setProfileOpen(false)
+<<<<<<< HEAD
     
     // Show success popup only on home page
     if (location.pathname === '/') {
       setShowLogoutSuccess(true)
       setTimeout(() => setShowLogoutSuccess(false), 3000)
     }
+=======
+     
+    navigate("/access");
+    }
+    catch(err){
+      console.log("Logout error:", err);
+    }
+
+
+
+
+    
+>>>>>>> 45e68ed2aadad402d9acd0c2e67ffb9097a4d8fd
   }
 
   const templesVisited = booking.pastBookings.filter(b => b.status === 'Completed').length

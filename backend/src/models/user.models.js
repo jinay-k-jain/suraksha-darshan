@@ -40,7 +40,7 @@
 //         validator: function (v) {
 //             return /^[0-9]{10}$/.test(v);
 //         },
-//         message: props => `${props.value} is not a valid 10-digit phone number!`
+//         message: props => ${props.value} is not a valid 10-digit phone number!
 //     }
 //     }
 
@@ -105,15 +105,33 @@ const userSchema = new Schema({
     }
 },{timestamps: true})
 
-userSchema.pre("save",async function (next) {
-    if(!this.isModified("password")) return next();
+userSchema.pre("save",async function () {
+    if(!this.isModified("password")) return ;
+     if (typeof this.password === 'string' && this.password.startsWith('$2')) {
+    return;
+  }
+
     this.password = await bcrypt.hash(this.password,10)
+    
+
     // next()
 })
 
-userSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password)
-}
+// userSchema.methods.isPasswordCorrect = async function (password) {
+//   return await bcrypt.compare(password, this.password)
+// }
+userSchema.methods.isPasswordCorrect = async function (candidatePassword) {
+  if (!candidatePassword) {
+    console.warn('[AUTH DEBUG] isPasswordCorrect called with empty candidatePassword for user:', this._id);
+    return false;
+  }
+  if (!this.password) {
+    console.warn('[AUTH DEBUG] isPasswordCorrect: stored hash missing for user:', this._id);
+    return false;
+  }
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
 
 userSchema.methods.generateAccessToken=function(){
    return jwt.sign(

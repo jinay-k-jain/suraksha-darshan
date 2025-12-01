@@ -10,15 +10,12 @@ const VisitorDetails = () => {
 
   const [name, setName] = useState(booking.visitors.name || '')
   const [phone, setPhone] = useState(booking.visitors.phone || '')
-  const [adults, setAdults] = useState(booking.visitors.adults || 1)
-  const [children, setChildren] = useState(booking.visitors.children || 0)
+  const [total, setTotal] = useState(booking.visitors.total || 1)
   const [elders, setElders] = useState(booking.visitors.elders || 0)
   const [differentlyAbled, setDifferentlyAbled] = useState(
     booking.visitors.differentlyAbled || 0
   )
-  
-  // Calculate total visitors
-  const totalVisitors = adults + children + elders + differentlyAbled
+  //const [notes, setNotes] = useState(booking.visitors.notes || '')
 
   useEffect(() => {
     if (!booking.temple) {
@@ -34,26 +31,14 @@ const VisitorDetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
-    if (totalVisitors > 20) {
-      alert('Maximum 20 visitors allowed per booking. Please reduce the number of visitors.')
-      return
-    }
-    
-    if (totalVisitors < 1) {
-      alert('At least 1 visitor is required.')
-      return
-    }
-    
     updateBooking({
       visitors: {
         name,
         phone,
-        adults,
-        children,
+        total,
         elders,
         differentlyAbled,
-        total: totalVisitors,
+        //notes,
       },
       currentBooking: {
         id: `BK-${Math.floor(Math.random() * 10000)}`,
@@ -66,11 +51,9 @@ const VisitorDetails = () => {
         visitors: {
           name,
           phone,
-          adults,
-          children,
+          total,
           elders,
           differentlyAbled,
-          total: totalVisitors,
         },
       },
     })
@@ -113,28 +96,15 @@ const VisitorDetails = () => {
             </label>
           </div>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
             <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-              Adults *
+              Total visitors *
               <input
                 type="number"
-                value={adults}
-                onChange={(e) => setAdults(parseInt(e.target.value) || 0)}
+                value={total}
+                onChange={(e) => setTotal(parseInt(e.target.value) || 1)}
                 min="1"
-                max="20"
                 required
-                className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
-              />
-            </label>
-
-            <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-              Children
-              <input
-                type="number"
-                value={children}
-                onChange={(e) => setChildren(parseInt(e.target.value) || 0)}
-                min="0"
-                max="20"
                 className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
               />
             </label>
@@ -146,7 +116,6 @@ const VisitorDetails = () => {
                 value={elders}
                 onChange={(e) => setElders(parseInt(e.target.value) || 0)}
                 min="0"
-                max="20"
                 className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
               />
             </label>
@@ -158,24 +127,10 @@ const VisitorDetails = () => {
                 value={differentlyAbled}
                 onChange={(e) => setDifferentlyAbled(parseInt(e.target.value) || 0)}
                 min="0"
-                max="20"
                 className="mt-2 rounded-2xl border border-brand-dusk/15 bg-white/80 px-4 py-3 focus:border-brand-saffron focus:outline-none"
               />
             </label>
           </div>
-          
-          {totalVisitors > 20 && (
-            <div className="mt-4 rounded-xl border-2 border-red-500 bg-red-50 p-4 text-sm text-red-700">
-              <strong>⚠️ Maximum limit exceeded!</strong> You can book for a maximum of 20 visitors. 
-              Current total: {totalVisitors}
-            </div>
-          )}
-          
-          {totalVisitors > 0 && totalVisitors <= 20 && (
-            <div className="mt-4 rounded-xl border-2 border-green-500 bg-green-50 p-4 text-sm text-green-700">
-              <strong>✓ Valid booking</strong> - Total visitors: {totalVisitors} / 20
-            </div>
-          )}
 
           {/* <label className="mt-4 flex flex-col text-sm font-medium text-brand-dusk/70">
             {t('details.notes')}
@@ -207,26 +162,29 @@ const VisitorDetails = () => {
               <p>
                 <strong>Parking:</strong> {booking.parkingZone} at {booking.parkingTime}
               </p>
+<<<<<<< HEAD
             )}
             <p className={totalVisitors > 20 ? 'text-red-600 font-bold' : ''}>
               <strong>Total Visitors:</strong> {totalVisitors} / 20
             </p>
             <p className="text-xs text-brand-dusk/60">
               (Adults: {adults}, Children: {children}, Elders: {elders}, Differently abled: {differentlyAbled})
+=======
+            )} */}
+            <p>
+              <strong>Visitors:</strong> {total} 
+              {/* (Elders: {elders}, Differently abled:{' '}
+              {differentlyAbled}) */}
+>>>>>>> 45e68ed2aadad402d9acd0c2e67ffb9097a4d8fd
             </p>
           </div>
         </div>
 
         <button
           type="submit"
-          disabled={totalVisitors > 20 || totalVisitors < 1}
-          className={`w-full rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition ${
-            totalVisitors > 20 || totalVisitors < 1
-              ? 'cursor-not-allowed bg-gray-400 text-gray-200'
-              : 'bg-brand-dusk text-white hover:bg-brand-saffron'
-          }`}
+          className="w-full rounded-full bg-brand-dusk px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-saffron"
         >
-          {totalVisitors > 20 ? 'Reduce visitors to continue' : t('details.submit')}
+          {t('details.submit')}
         </button>
       </form>
     </div>
