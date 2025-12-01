@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../context/BookingContext'
 import useTranslation from '../hooks/useTranslation'
@@ -11,6 +11,11 @@ const TempleSearch = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedState, setSelectedState] = useState('')
   const [selectedDistrict, setSelectedDistrict] = useState('')
+
+  // Clear temple selection when returning to home page
+  useEffect(() => {
+    updateBooking({ temple: null })
+  }, [])
 
   const filteredTemples = useMemo(() => {
     let result = temples
