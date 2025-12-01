@@ -39,8 +39,9 @@ const VisitorDetails = () => {
         temple: booking.temple.name,
         city: booking.temple.city,
         date: booking.visitDate,
-        slot: booking.visitSlot || booking.parkingTime,
-        parking: booking.parkingZone || 'Not selected',
+        slot: booking.visitSlot, 
+        // || booking.parkingTime,
+        // parking: booking.parkingZone || 'Not selected',
         visitors: {
           name,
           phone,
@@ -158,11 +159,11 @@ const VisitorDetails = () => {
                 <strong>Slot:</strong> {booking.visitSlot}
               </p>
             )}
-            {booking.parkingZone && (
+            {/* {booking.parkingZone && (
               <p>
                 <strong>Parking:</strong> {booking.parkingZone} at {booking.parkingTime}
               </p>
-            )}
+            )} */}
             <p>
               <strong>Visitors:</strong> {total} 
               {/* (Elders: {elders}, Differently abled:{' '}
