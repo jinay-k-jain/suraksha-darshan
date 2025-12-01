@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { useBooking } from '../context/BookingContext'
 import useTranslation from '../hooks/useTranslation'
 import { languages, languageNames } from '../i18n/languages'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const navLinks = [
   { labelKey: 'nav.home', to: '/' },
@@ -10,6 +12,7 @@ const navLinks = [
 ]
 
 const AppLayout = ({ children }) => {
+  const navigate= useNavigate();
   const location = useLocation()
   const { booking, updateBooking, language, setLanguage } = useBooking()
   const [bookingsOpen, setBookingsOpen] = useState(false)
@@ -20,6 +23,7 @@ const AppLayout = ({ children }) => {
   const [selectedHistory, setSelectedHistory] = useState(
     booking.pastBookings[0] ?? null,
   )
+  
   const t = useTranslation()
 
   useEffect(() => {
@@ -60,8 +64,16 @@ const AppLayout = ({ children }) => {
     }
   }
 
-  const handleLogout = () => {
-    updateBooking({
+  const handleLogout = async() => {
+       try{
+        await axios.post(
+          "http://localhost:8000/api/v1/users/logout",
+          {},
+          {withCredentials: true}
+        );
+
+        alert('User logged out successfully!!')
+        updateBooking({
       isAuthenticated: false,
       otpVerified: false,
       visitors: {
@@ -75,6 +87,17 @@ const AppLayout = ({ children }) => {
       },
     })
     setProfileOpen(false)
+     
+    navigate("/access");
+    }
+    catch(err){
+      console.log("Logout error:", err);
+    }
+
+
+
+
+    
   }
 
   const templesVisited = booking.pastBookings.filter(b => b.status === 'Completed').length

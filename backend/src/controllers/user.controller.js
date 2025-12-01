@@ -3,6 +3,9 @@ import { ApiError } from "../utils/ApiError.js";
 import {User} from "../models/user.models.js"
 // import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from 'jsonwebtoken'
+import bcrypt from "bcrypt"
+
 
 const generateAccessAndRefereshTokens = async(userId) =>{
     try {
@@ -134,7 +137,7 @@ console.log(phoneno)
     
     }
 
-   const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
+   const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
@@ -146,12 +149,12 @@ console.log(phoneno)
     return res
     .status(200)
     .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("refreshToken", newRefreshToken, options)
     .json(
         new ApiResponse(
             200, 
             {
-                user: loggedInUser, accessToken, refreshToken
+                user: loggedInUser, accessToken, newRefreshToken
             },
             "User logged In Successfully"
         )
@@ -159,5 +162,122 @@ console.log(phoneno)
 
 })
 
+const resetPassword = AsyncHandler(async (req, res) => {
+  const { newPassword, phoneno } = req.body;
+
+  // basic validation
+  if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
+    throw new ApiError(400, 'newPassword is required and must be at least 6 characters');
+  }
+
+  // choose user by logged-in id OR by supplied phoneno (trim phoneno)
+  let user;
+  if (req.user?._id) {
+    user = await User.findById(req.user._id);
+  } else {
+    if (!phoneno) throw new ApiError(400, 'phoneno is required when not authenticated');
+    user = await User.findOne({ phoneno: phoneno.trim() });
+  }
+ if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+
+//    const hashed = await bcrypt.hash(newPassword, 10);
+  user.password = newPassword;
+  // assign new password and save (pre-save hook should hash it)
+//   user.password = newPassword;
+//   await user.save({ validateBeforeSave: false });
+ await user.save();
+
+ 
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'Password changed successfully'));
+});
+
+
+
+const logoutUser= (async(req,res)=>{
+     await User.findByIdAndUpdate( 
+        req.user._id,
+        {
+            $set:{
+                refreshToken: 1
+            }
+        },
+        {
+            new:true
+        }
+    )
+
+     const options = {
+        httpOnly: true,
+        secure:true
+    }
+
+    return res.status(200)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken",options)
+    .json(new ApiResponse (200,{}, "User Logged out successfully!!"))
+    
+    
+    
+})
+
+const refreshAccessToken= AsyncHandler(async(req,res)=>{
+    const incomingRefreshToken=req.cookies.refreshToken || req.body.refreshToken
+
+    if(!incomingRefreshToken){
+        throw new ApiError(401,"unauthorized request")
+    }
+
+   try {
+    const decodedToken=  jwt.verify(
+         incomingRefreshToken,
+         process.env.REFRESH_TOKEN_SECRET
+     )
+ 
+     const user= await User.findById(decodedToken?._id)
+ 
+     if(!user){
+         throw new ApiError(401,"Invalid refresh token")
+     }
+ 
+     if(incomingRefreshToken !== user?.refreshToken){
+         throw new ApiError(401, "Refresh Token is expired or used")
+     }
+ 
+     const options = {
+         httpOnly: true,
+         secure: true
+     }
+ 
+     await generateAccessAndRefereshTokens(user._id)
+ 
+     return res
+     .status(200)
+     .cookie("accessToken", accessToken, options)
+     .cookie("refreshToken", newRefreshToken, options)
+     .json(
+         new ApiResponse(
+             200,
+             {accessToken, refreshToken:newRefreshToken},
+             "Access token refreshed"
+         )
+     )
+ 
+ 
+   } catch (error) {
+      throw new ApiError(401, error?.message || "Invalid refresh token")
+    
+   }
+})
+
+
 export {registerUser}
 export {loginUser}
+export {logoutUser}
+export {refreshAccessToken}
+export {resetPassword}

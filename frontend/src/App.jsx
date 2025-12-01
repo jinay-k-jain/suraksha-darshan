@@ -1,3 +1,7 @@
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.withCredentials = true;
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { BookingProvider } from './context/BookingContext'
 import AppLayout from './components/AppLayout'
@@ -10,6 +14,11 @@ import VisitorDetails from './pages/VisitorDetails'
 import UserAccess from './pages/UserAccess'
 import Confirmation from './pages/Confirmation'
 import TempleMap from './pages/TempleMap'
+
+
+
+
+
 
 function App() {
   return (
