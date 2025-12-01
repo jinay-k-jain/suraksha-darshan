@@ -162,20 +162,12 @@ const VisitorDetails = () => {
               <p>
                 <strong>Parking:</strong> {booking.parkingZone} at {booking.parkingTime}
               </p>
-<<<<<<< HEAD
             )}
             <p className={totalVisitors > 20 ? 'text-red-600 font-bold' : ''}>
               <strong>Total Visitors:</strong> {totalVisitors} / 20
             </p>
             <p className="text-xs text-brand-dusk/60">
               (Adults: {adults}, Children: {children}, Elders: {elders}, Differently abled: {differentlyAbled})
-=======
-            )} */}
-            <p>
-              <strong>Visitors:</strong> {total} 
-              {/* (Elders: {elders}, Differently abled:{' '}
-              {differentlyAbled}) */}
->>>>>>> 45e68ed2aadad402d9acd0c2e67ffb9097a4d8fd
             </p>
           </div>
         </div>
