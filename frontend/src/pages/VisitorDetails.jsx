@@ -26,6 +26,12 @@ const VisitorDetails = () => {
     }
   }, [booking.temple, navigate])
 
+  useEffect(() => {
+    if (!booking.isAuthenticated) {
+      navigate('/')
+    }
+  }, [booking.isAuthenticated, navigate])
+
   const handleSubmit = (e) => {
     e.preventDefault()
     
@@ -76,22 +82,15 @@ const VisitorDetails = () => {
   return (
     <div className="space-y-8">
       <section className="glass-panel space-y-4">
-        <p className="text-sm uppercase tracking-wide text-brand-dusk/60">
-          {t('details.heading')}
-        </p>
-        <h2 className="section-heading">{t('details.title')}</h2>
-        <p className="text-brand-dusk/70">{t('details.subtitle')}</p>
+        <h2 className="section-heading">Traveller Details</h2>
       </section>
 
       <form onSubmit={handleSubmit} className="glass-panel space-y-6">
         <div>
-          <p className="mb-4 text-sm uppercase tracking-wide text-brand-dusk/60">
-            {t('details.dataStep')}
-          </p>
 
           <div className="grid gap-4 md:grid-cols-2">
             <label className="flex flex-col text-sm font-medium text-brand-dusk/70">
-              Main pilgrim name *
+              Devotee Name *
               <input
                 type="text"
                 value={name}
@@ -204,24 +203,16 @@ const VisitorDetails = () => {
                 <strong>Slot:</strong> {booking.visitSlot}
               </p>
             )}
-            {/* {booking.parkingZone && (
+            {booking.parkingZone && (
               <p>
                 <strong>Parking:</strong> {booking.parkingZone} at {booking.parkingTime}
               </p>
-<<<<<<< HEAD
             )}
             <p className={totalVisitors > 20 ? 'text-red-600 font-bold' : ''}>
               <strong>Total Visitors:</strong> {totalVisitors} / 20
             </p>
             <p className="text-xs text-brand-dusk/60">
               (Adults: {adults}, Children: {children}, Elders: {elders}, Differently abled: {differentlyAbled})
-=======
-            )} */}
-            <p>
-              <strong>Visitors:</strong> {total} 
-              {/* (Elders: {elders}, Differently abled:{' '}
-              {differentlyAbled}) */}
->>>>>>> 92de808d0831f38009f8af93646dcdf6c6ebd6d1
             </p>
           </div>
         </div>

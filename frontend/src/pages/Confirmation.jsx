@@ -17,9 +17,16 @@ const Confirmation = () => {
     () =>
       JSON.stringify({
         temple: booking.temple?.name,
+        templeId: booking.temple?.id,
         date: booking.visitDate,
         slot: booking.visitSlot || booking.parkingTime,
-        visitors: booking.visitors.total,
+        devoteeName: booking.visitors.name,
+        contact: booking.visitors.phone,
+        totalVisitors: booking.visitors.total,
+        adults: booking.visitors.adults || 0,
+        children: booking.visitors.children || 0,
+        elders: booking.visitors.elders || 0,
+        differentlyAbled: booking.visitors.differentlyAbled || 0,
         issuedAt: new Date().toISOString(),
       }),
     [booking],
@@ -97,29 +104,13 @@ const Confirmation = () => {
                 Visitors
               </p>
               <ul className="mt-2 text-sm text-brand-dusk/70">
-                <li>Main pilgrim: {booking.visitors.name || '—'}</li>
+                <li>Devotee name: {booking.visitors.name || '—'}</li>
                 <li>Contact: {booking.visitors.phone || '—'}</li>
                 <li>Total: {booking.visitors.total}</li>
                 <li>Elders: {booking.visitors.elders}</li>
                 <li>Differently abled: {booking.visitors.differentlyAbled}</li>
               </ul>
             </article>
-            {booking.parkingZone && (
-              <article className="rounded-3xl border border-brand-dusk/10 bg-white/80 p-5 shadow">
-                <p className="text-xs uppercase tracking-wide text-brand-dusk/50">
-                  Parking
-                </p>
-                <p className="text-sm text-brand-dusk/70">
-                  Zone: {booking.parkingZone}
-                </p>
-                <p className="mt-1 text-sm text-brand-dusk/70">
-                  {booking.parkingTime} hrs · {booking.vehicleType}
-                </p>
-                <p className="mt-2 text-xs text-brand-dusk/50">
-                  * Slot will be assigned upon arrival
-                </p>
-              </article>
-            )}
           </div>
         </div>
         <div className="flex flex-wrap gap-3">

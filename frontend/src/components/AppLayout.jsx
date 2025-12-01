@@ -20,6 +20,11 @@ const AppLayout = ({ children }) => {
   const [selectedHistory, setSelectedHistory] = useState(
     booking.pastBookings[0] ?? null,
   )
+  const [showLogoutSuccess, setShowLogoutSuccess] = useState(false)
+  const [showLoginSuccess, setShowLoginSuccess] = useState(false)
+  const [previousAuthState, setPreviousAuthState] = useState(booking.isAuthenticated)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const t = useTranslation()
 
   useEffect(() => {
@@ -30,6 +35,15 @@ const AppLayout = ({ children }) => {
     window.scrollTo(0, 0)
   }, [location.pathname])
 
+  // Detect login success on home page
+  useEffect(() => {
+    if (booking.isAuthenticated && !previousAuthState && location.pathname === '/') {
+      setShowLoginSuccess(true)
+      setTimeout(() => setShowLoginSuccess(false), 3000)
+    }
+    setPreviousAuthState(booking.isAuthenticated)
+  }, [booking.isAuthenticated, location.pathname])
+
   useEffect(() => {
     document.documentElement.lang = language
   }, [language])
@@ -39,7 +53,22 @@ const AppLayout = ({ children }) => {
   }, [booking.pastBookings])
 
   const handleCancelRequest = () => {
-    setShowCancelOtp(true)
+    setShowCancelConfirm(true)
+  }
+
+  const confirmCancelBooking = () => {
+    setShowCancelConfirm(false)
+    if (!booking.currentBooking) return
+    
+    const cancelledRecord = {
+      ...booking.currentBooking,
+      status: 'Cancelled',
+      cancelledOn: new Date().toISOString(),
+    }
+    updateBooking({
+      currentBooking: null,
+      pastBookings: [cancelledRecord, ...booking.pastBookings],
+    })
   }
 
   const handleCancelConfirm = () => {
@@ -60,7 +89,12 @@ const AppLayout = ({ children }) => {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogoutRequest = () => {
+    setShowLogoutConfirm(true)
+  }
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false)
     updateBooking({
       isAuthenticated: false,
       otpVerified: false,
@@ -75,6 +109,12 @@ const AppLayout = ({ children }) => {
       },
     })
     setProfileOpen(false)
+    
+    // Show success popup only on home page
+    if (location.pathname === '/') {
+      setShowLogoutSuccess(true)
+      setTimeout(() => setShowLogoutSuccess(false), 3000)
+    }
   }
 
   const templesVisited = booking.pastBookings.filter(b => b.status === 'Completed').length
@@ -83,6 +123,97 @@ const AppLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-brand-smoke">
+      {showLogoutSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="rounded-3xl border-2 border-green-500 bg-white p-8 shadow-2xl">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+                <svg className="h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-black">Logged Out Successfully</h3>
+              <p className="text-gray-600">You have been logged out of your account</p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {showLoginSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="rounded-3xl border-2 border-green-500 bg-white p-8 shadow-2xl">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+                <svg className="h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-black">Login Successful</h3>
+              <p className="text-gray-600">Welcome back! You are now logged in</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="rounded-3xl border-2 border-gray-200 bg-white p-8 shadow-2xl">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-orange-100">
+                <svg className="h-12 w-12 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-black">Confirm Logout</h3>
+              <p className="text-center text-gray-600">Are you sure you want to logout?</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="rounded-full border-2 border-gray-300 px-6 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+                >
+                  No
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="rounded-full bg-red-500 px-6 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCancelConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="rounded-3xl border-2 border-gray-200 bg-white p-8 shadow-2xl">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-orange-100">
+                <svg className="h-12 w-12 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-black">Cancel Booking</h3>
+              <p className="text-center text-gray-600">Are you sure you want to cancel this booking?</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowCancelConfirm(false)}
+                  className="rounded-full border-2 border-gray-300 px-6 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+                >
+                  No
+                </button>
+                <button
+                  onClick={confirmCancelBooking}
+                  className="rounded-full bg-red-500 px-6 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <header className="border-b border-brand-dusk/5 bg-white">
         <div className="relative mx-auto flex max-w-6xl items-center gap-4 px-6 py-4">
           <Link to="/" className="flex items-center gap-3">
@@ -99,7 +230,7 @@ const AppLayout = ({ children }) => {
             </div>
           </Link>
 
-          <div className="hidden flex-1 items-center justify-between md:flex">
+          <div className="hidden flex-1 items-center md:flex">
             <nav className="flex items-center gap-8 text-sm font-semibold text-brand-slate">
               {navLinks.map((item) => {
                 const isActive = location.pathname === item.to
@@ -127,7 +258,8 @@ const AppLayout = ({ children }) => {
                 </Link>
               )}
             </nav>
-            <div className="relative">
+            <div className="ml-auto flex items-center gap-3">
+              <div className="relative">
               <button
                 onClick={() => setLanguageOpen((prev) => !prev)}
                 className="flex items-center gap-2 rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron"
@@ -155,15 +287,16 @@ const AppLayout = ({ children }) => {
                   ))}
                 </div>
               )}
+              </div>
+              {booking.isAuthenticated && (
+                <button
+                  onClick={() => setBookingsOpen((prev) => !prev)}
+                  className="rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron"
+                >
+                  {t('nav.myBookings', 'My bookings')}
+                </button>
+              )}
             </div>
-            {booking.isAuthenticated && (
-              <button
-                onClick={() => setBookingsOpen((prev) => !prev)}
-                className="rounded-full border border-brand-dusk/20 px-4 py-2 text-sm font-semibold text-brand-slate hover:border-brand-saffron hover:text-brand-saffron"
-              >
-                {t('nav.myBookings', 'My bookings')}
-              </button>
-            )}
           </div>
 
           {booking.isAuthenticated && (
@@ -226,7 +359,7 @@ const AppLayout = ({ children }) => {
                   </div>
                   
                   <button
-                    onClick={handleLogout}
+                    onClick={handleLogoutRequest}
                     className="w-full rounded-full border-2 border-red-500 px-4 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-500 hover:text-white"
                   >
                     Logout

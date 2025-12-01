@@ -167,13 +167,13 @@ const ParkingSlotSelection = () => {
           </div>
 
           <button
-            onClick={() => navigate('/parking')}
+            onClick={() => navigate('/booking')}
             className="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-lg transition hover:border-brand-orange hover:text-brand-orange"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Parking Zones
+            Move to Temple Info Page
           </button>
         </section>
       </div>

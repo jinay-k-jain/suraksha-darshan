@@ -61,50 +61,63 @@ const SlotAvailability = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {slotTemplates.map((slot) => {
           const isActive = selectedSlot === slot.label
+          const isDisabled = slot.available === 0
           return (
             <article
               key={slot.label}
-              onClick={() => setSelectedSlot(slot.label)}
-              onDoubleClick={handleContinue}
-              className={`flex cursor-pointer flex-col gap-3 rounded-3xl border p-6 transition hover:-translate-y-1 hover:shadow-xl ${
-                isActive
-                  ? 'border-brand-saffron bg-white shadow-lg'
-                  : 'border-brand-dusk/10 bg-white/70'
+              onClick={() => !isDisabled && setSelectedSlot(slot.label)}
+              onDoubleClick={() => !isDisabled && handleContinue()}
+              className={`flex flex-col gap-3 rounded-3xl border p-6 transition ${
+                isDisabled
+                  ? 'cursor-not-allowed border-gray-300 bg-gray-100 opacity-60'
+                  : isActive
+                    ? 'cursor-pointer border-brand-saffron bg-white shadow-lg hover:-translate-y-1 hover:shadow-xl'
+                    : 'cursor-pointer border-brand-dusk/10 bg-white/70 hover:-translate-y-1 hover:shadow-xl'
               }`}
             >
               <div className="flex items-center justify-between">
-                <p className="text-lg font-semibold text-brand-dusk">{slot.label}</p>
+                <p className={`text-lg font-semibold ${isDisabled ? 'text-gray-500' : 'text-brand-dusk'}`}>
+                  {slot.label}
+                </p>
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    slot.status === 'available'
-                      ? 'bg-brand-teal/15 text-brand-teal'
-                      : slot.status === 'few'
-                        ? 'bg-brand-saffron/10 text-brand-saffron'
-                        : slot.status === 'filling'
+                    isDisabled
+                      ? 'bg-gray-200 text-gray-600'
+                      : slot.status === 'available'
+                        ? 'bg-brand-teal/15 text-brand-teal'
+                        : slot.status === 'few'
                           ? 'bg-brand-saffron/10 text-brand-saffron'
-                          : 'bg-rose-50 text-rose-500'
+                          : slot.status === 'filling'
+                            ? 'bg-brand-saffron/10 text-brand-saffron'
+                            : 'bg-rose-50 text-rose-500'
                   }`}
                 >
-                  {slot.status === 'available'
-                    ? 'Available'
-                    : slot.status === 'few'
-                      ? 'Few left'
-                      : slot.status === 'filling'
-                        ? 'Filling fast'
-                        : 'Waitlist'}
+                  {isDisabled
+                    ? 'Not Available'
+                    : slot.status === 'available'
+                      ? 'Available'
+                      : slot.status === 'few'
+                        ? 'Few left'
+                        : slot.status === 'filling'
+                          ? 'Filling fast'
+                          : 'Waitlist'}
                 </span>
               </div>
+              <p className={`text-sm ${isDisabled ? 'text-gray-500' : 'text-brand-dusk/60'}`}>
+                {slot.available} / {slot.capacity} slots available
+              </p>
               <div className="h-2 rounded-full bg-brand-dusk/10">
                 <div
                   className={`h-2 rounded-full transition ${
                     slot.status === 'available'
-                      ? 'w-1/3 bg-brand-teal'
+                      ? 'bg-brand-teal'
                       : slot.status === 'few'
-                        ? 'w-3/4 bg-brand-saffron'
+                        ? 'bg-brand-saffron'
                         : slot.status === 'filling'
-                          ? 'w-2/3 bg-brand-saffron'
-                          : 'w-full bg-rose-400'
+                          ? 'bg-brand-saffron'
+                          : 'bg-rose-400'
                   }`}
+                  style={{ width: `${(slot.available / slot.capacity) * 100}%` }}
                 />
               </div>
             </article>

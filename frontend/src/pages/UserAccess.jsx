@@ -34,7 +34,6 @@ const UserAccess = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
-  const [errorMsg, setErrorMsg] = useState("");
   
   const handleLogin = (e) => {
     e.preventDefault()
@@ -43,11 +42,12 @@ const UserAccess = () => {
       isAuthenticated: true,
       visitors: {
         ...booking.visitors,
-        name: loginContact,
+        name: '',
+        phone: loginContact,
         contact: loginContact,
       },
     })
-    const nextPath = booking.pendingPath || '/details'
+    const nextPath = booking.pendingPath || '/'
     navigate(nextPath)
   }
   const handleSignup = (e) => {
@@ -63,10 +63,11 @@ const UserAccess = () => {
       visitors: {
         ...booking.visitors,
         name: `${firstname} ${lastname}`,
+        phone: phoneno,
         contact: phoneno,
       },
     })
-    const nextPath = booking.pendingPath || '/details'
+    const nextPath = booking.pendingPath || '/'
     navigate(nextPath)
   }
 
@@ -420,11 +421,7 @@ const UserAccess = () => {
                   <span className="mt-1 text-xs text-green-500">Passwords match ✓</span>
                 )}
               </label>
-               {errorMsg && (
-    <p className="text-sm text-red-500 font-medium">
-      {errorMsg}
-    </p>
-  )}
+
               <button
                 type="submit"
                 className="w-full rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-orange-dark"
