@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../context/BookingContext'
 import useTranslation from '../hooks/useTranslation'
+import axios from 'axios'
 
 const UserAccess = () => {
   const navigate = useNavigate()
@@ -91,8 +92,39 @@ const UserAccess = () => {
     const nextPath = booking.pendingPath || '/details'
     navigate(nextPath)
   }
-  const handleSignup = (e) => {
+  const handleSignup = async(e) => {
     e.preventDefault()
+    const userInfo={
+      firstname: firstname.trim(),
+    lastname: lastname.trim(),
+    phoneno: phoneno.trim(),
+    password
+    };
+     try {
+    const res = await axios.post(
+      'http://localhost:8000/api/v1/users/register', userInfo,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    // optional: give feedback for success
+    if (res && (res.status === 200 || res.status === 201)) {
+      console.log('Signup API success:', res.data);
+      // if you want a success alert, uncomment:
+      // alert('Signup API call succeeded.');
+    } else {
+      console.warn('Signup API responded with unexpected status:', res?.status, res?.data);
+    }
+  } catch (err) {
+    // handle network / server errors here — but we DO NOT stop booking update/navigation
+    console.error('Signup API error:',err);
+    // const serverMsg = err?.response?.data?.message || err.message || 'Signup API failed';
+    // show an alert but still proceed to booking update/navigation as you requested
+    //alert("User already exists!!");
+    setErrorMsg("User already exists!!");
+return;
+
+    
+  }
     if (password !== confirmPassword) {
       alert('Passwords do not match!')
       return
