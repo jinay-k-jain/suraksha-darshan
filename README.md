@@ -28,14 +28,6 @@ This project builds an ML-first crowd management solution focused on pilgrimage 
   - `model_api/test_clean_encoded_2.csv`
 - API dependencies: `model_api/requirements.txt`
 
-### 3) Panic Detection for Safety Monitoring
-- Barricade panic detection: `panic_detection/panic_detection_in_barricade/panic.py`
-- Temple panic detection (live feed): `panic_detection/panic_detection_in_temple/prediction(panic)_on_live_feed.py`
-- Temple panic detection (video): `panic_detection/panic_detection_in_temple/prediction(panic)_on_video.py`
-- Alarm handling: `panic_detection/panic_detection_in_barricade/alarm.py`
-- Detection weights: `yolov8*.pt`, `yolov8n.onnx`
-
----
 
 ## End-to-End Solution Strategy (How It Solves PS 25165)
 
@@ -47,19 +39,10 @@ The model predicts likely visitor volume for a given day using weather, weekday/
 - Better police/volunteer deployment
 - Better medical and queue resource planning
 
-### B) Smart Monitoring for Panic & Safety
-The CV modules detect people + motion spikes and classify crowd state as **NORMAL / WARNING / PANIC**.
-
-**Impact:**
-- Faster detection of abnormal crowd movement
-- Early intervention before stampede-like risk escalation
-- On-ground alerting via audio siren/beep signals
-
-### C) API Layer for Integration
+### B) API Layer for Integration
 FastAPI service exposes prediction endpoint (`/predict`) for app/dashboard integration.
 
 **Impact:**
-- Can power queue dashboards, admin panels, and command center workflows
 - Enables integration with mobile/web systems for informed crowd advisories
 
 ---
@@ -189,42 +172,6 @@ Note: In this run, CatBoost is strongest overall; blending/stacking provide addi
 
 ---
 
-## Panic Detection Modules (Computer Vision)
-
-## 1) Barricade-side Detection (`panic.py`)
-Pipeline:
-1. Detects persons using YOLO
-2. Computes dense optical flow between frames
-3. Estimates per-person motion direction and magnitude
-4. Compares movement direction against expected crowd-flow side
-5. Computes corrected-behavior percentage
-6. Classifies state:
-   - High compliance → NORMAL
-   - Medium compliance → WARNING
-   - Low compliance → PANIC
-7. Triggers audio via `alarm.py` (`stop_alarm`, `fast_beep`, `siren`)
-
-This is useful in barricaded queue lanes to detect reverse/chaotic movement.
-
-## 2) Temple-area Detection (Live/Video)
-Files:
-- `prediction(panic)_on_live_feed.py`
-- `prediction(panic)_on_video.py`
-
-Pipeline:
-1. Person detection (YOLO)
-2. Optical-flow velocity extraction per person
-3. Frame-to-frame acceleration/spike estimation
-4. Spike ratio = people with abrupt motion / total detected people
-5. Crowd state classification:
-   - NORMAL
-   - WARNING
-   - PANIC
-
-This supports open-area monitoring where panic often appears as sudden collective speed spikes.
-
----
-
 ## Mapping to SIH Expected Solution Components
 
 - **AI/ML Crowd Prediction Models** ✅  
@@ -280,41 +227,6 @@ Example payload:
 }
 ```
 
-## B) Panic Detection (Barricade)
-```bash
-cd panic_detection/panic_detection_in_barricade
-python panic.py
-```
-Press `q` to exit.
-
-## C) Panic Detection (Temple Live Feed)
-```bash
-cd panic_detection/panic_detection_in_temple
-python "prediction(panic)_on_live_feed.py"
-```
-
-## D) Panic Detection (Temple Video)
-```bash
-cd panic_detection/panic_detection_in_temple
-python "prediction(panic)_on_video.py"
-```
-
----
-
-## Dependencies
-Primary dependency list exists at:
-- `model_api/requirements.txt`
-
-For panic detection scripts, ensure environment has:
-- `opencv-python`
-- `numpy`
-- `ultralytics`
-- `torch`
-
-Audio alert scripts expect Linux `aplay` utility.
-
----
-
 ## Current Limitations
 - Dataset appears temple-specific (Ambaji-focused in shared sample), so transfer learning/retraining is needed for other temple towns.
 - Full production orchestration (camera stream manager, alert dashboard, operator app) is outside current repo.
@@ -339,7 +251,6 @@ Audio alert scripts expect Linux `aplay` utility.
 ## Conclusion
 This repository demonstrates a practical ML solution for pilgrimage crowd management:
 - **Predictive intelligence** for expected crowd surges
-- **Vision-based safety intelligence** for panic detection
 - **Deployable API layer** for operational integration
 
 Together, these components form a strong prototype foundation for SIH PS 25165 and can be scaled toward a full smart-temple command-and-control platform.
