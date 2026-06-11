@@ -55,8 +55,7 @@ class UserInput(BaseModel):
     is_weekend: int
     festival_flag: int
     public_holiday: int
-    #visitor_count: int 
-    #ghujj
+    #visitor_count: int
 
 def feature_engineer(user_row):
 
